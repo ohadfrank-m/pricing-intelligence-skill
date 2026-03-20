@@ -216,7 +216,7 @@ Do not make this into a separate section or elaborate on it — one line is enou
 
 For every item logged, always create a doc attached to the board item — no user prompt needed. Run `create_doc` calls in parallel with the activity update from Step 3.
 
-**Before composing the doc markdown:** run the Cloudinary probe from [visual-diff.md](visual-diff.md) Steps 1a–1d for every item (monitoring, research, teardown, digest). This is mandatory and free. If the probe finds before/after snapshots, embed them in the doc. If it finds nothing, proceed without images — do not add placeholders.
+**Before composing the doc markdown:** run the Cloudinary probe from [visual-diff.md](visual-diff.md) Steps 1a–1d for every item (monitoring, research, teardown, digest). This is mandatory and free. If the probe finds before/after snapshots, embed them in the doc. If it finds nothing, generate a Thum.io screenshot URL for the company's pricing page and embed it as the current-state image (see visual-diff.md Step 1e). Only omit images entirely if Thum.io also fails.
 
 For each item logged, call `create_doc` to attach a doc directly to that board item:
 

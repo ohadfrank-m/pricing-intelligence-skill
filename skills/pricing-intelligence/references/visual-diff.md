@@ -8,13 +8,14 @@ Capture before/after screenshots of a pricing page change and embed them in the 
 
 ## How it works
 
-PricingSaaS diff pages are client-side rendered — WebFetch returns 404, and the browser MCP is blocked for pricingsaas.com. Three paths to get the images, in order of preference:
+PricingSaaS diff pages are client-side rendered — WebFetch returns 404, and the browser MCP is blocked for pricingsaas.com. Four paths to get the images, in order of preference:
 
 | Path | Cost | How |
 |------|------|-----|
-| Cloudinary direct probe | Free | Guess snapshot dates → curl probe → versionless URLs work |
-| `get_diff_highlight` | 1 credit | Returns `image_url` directly |
-| Fallback link only | Free | Embed PricingSaaS diff page link; no visual |
+| Cloudinary direct probe | Free | Historical snapshots for PricingSaaS-tracked companies |
+| Thum.io live screenshot | Free | Live screenshot of current pricing page — any company |
+| `get_diff_highlight` | 1 credit | Returns annotated `image_url` directly |
+| Fallback link only | Free | Embed pricing page link; no visual |
 
 **Key finding:** Cloudinary serves PricingSaaS pricing page images **without the `v{version}` number**. The URL `https://res.cloudinary.com/dd6dkaan9/image/upload/pricing_pages/{slug}_{YYYYMMDD}.png` works directly if the snapshot exists for that date. This makes it possible to get images for free by probing likely dates.
 
@@ -84,11 +85,45 @@ https://pricingsaas.com/compare-viewer?url1={encoded_cloudinary_before}&url2={en
 
 The compare-viewer renders the two images side by side in the user's browser — it works even with versionless Cloudinary URLs.
 
-If no probes return `200`, fall through to Step 2.
+If no probes return `200`, fall through to Step 1e.
 
 ---
 
-## Step 2: Get image URLs — `get_diff_highlight` path (paid, fallback if Cloudinary probe returns no results)
+## Step 1e: Thum.io live screenshot (free fallback for untracked companies)
+
+If the Cloudinary probe returns no `200` results, generate a live screenshot using Thum.io. This works for **any** company — no PricingSaaS tracking required, no API key needed.
+
+URL pattern:
+```
+https://image.thum.io/get/width/1280/crop/900/{pricing_page_url}
+```
+
+Example:
+```
+https://image.thum.io/get/width/1280/crop/900/https://base44.com/pricing
+```
+
+The URL returns a PNG of the current pricing page. It is publicly accessible and renders inline in monday Workdocs as a standard markdown image.
+
+Embed in the doc as:
+
+```markdown
+### Current pricing page
+
+*Screenshot captured via Thum.io — reflects the live page as of research date. No historical snapshots available (company not yet tracked on PricingSaaS).*
+
+![{Company} pricing page — current state](https://image.thum.io/get/width/1280/crop/900/{pricing_page_url})
+
+[View live pricing page →]({pricing_page_url})
+```
+
+**Note:** Thum.io reflects the **current** page state, not a historical snapshot — the image will update each time the doc is viewed. This is appropriate for first-research reports. Use Cloudinary probes for historical before/after comparisons.
+
+If Thum.io also returns a non-200 or times out, fall through to Step 2.
+
+---
+
+## Step 2: Get image URLs — `get_diff_highlight` path (paid, fallback if both Cloudinary probe and Thum.io return no results)
 
 Cost: 1 credit per call. Confirm before running if credits are low.
 
@@ -134,11 +169,11 @@ If only the after image is available (from `get_diff_highlight`):
 
 ---
 
-## Step 4: If both paths fail
+## Step 4: If all paths fail
 
-If the Cloudinary probe returns no `200` results and credits are 0, omit the visual section silently. Do not write any placeholder, credit message, or note about unavailability — the doc simply has no image block for that change.
+If the Cloudinary probe returns no `200` results, Thum.io fails, and credits are 0, omit the visual section silently. Do not write any placeholder, credit message, or note about unavailability — the doc simply has no image block for that change.
 
-The Cloudinary probe (Step 1) is the primary image path and is entirely free. Only reach Step 4 after Step 1 has been fully attempted across all candidate dates with no results.
+Only reach Step 4 after Steps 1, 1e, and 2 have all been attempted and returned nothing.
 
 ---
 
