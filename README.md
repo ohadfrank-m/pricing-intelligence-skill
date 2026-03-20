@@ -1,6 +1,6 @@
 # Pricing intelligence — AI Agent Skill
 
-An agent skill for researching and monitoring SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, and supplementary intelligence sources.
+An agent skill for researching and monitoring SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, websearch, and additional intelligence sources.
 
 Works in **Cursor**, **Claude** (via Claude Code or Cowork), and any AI environment that supports MCP and markdown-based skills.
 
@@ -127,7 +127,3 @@ skills/
       monday-logging.md           # monday.com board logging workflow
       visual-diff.md              # Visual before/after diff generation
 ```
-
-## Credits
-
-Built on [PricingSaaS](https://pricingsaas.com). Some tools consume credits (pricing history diffs, visual diffs) — the skill always states the cost and asks for confirmation before spending credits.
