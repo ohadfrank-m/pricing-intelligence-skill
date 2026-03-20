@@ -1,32 +1,47 @@
 # Monday.com logging workflow
 
-After every pricing intelligence output, log the result to the **Pricing Intelligence** board on monday.com. This runs automatically at the end of every workflow — no user prompt needed.
+After every pricing intelligence output, log the result to the user's chosen monday.com board. The target board is determined once at the start of the first logging call in a session — the user picks it, and it's reused for the rest of the session without asking again.
 
-## Board name
+## Step 1: Determine the target board
 
-```
-Pricing Intelligence
-```
+This step runs **once per session** — on the first logging call only. Store the resolved board ID and reuse it for all subsequent items in the same session without asking again.
 
-This name is the single source of truth. Always search for it exactly.
+### 1a. Ask the user
+
+Before searching or creating anything, ask:
+
+> "Where should I log pricing outputs on monday.com?
+> 1. **Use an existing board** — tell me the board name or paste its URL
+> 2. **Create a new board** — I'll set one up and ask which workspace to put it in"
+
+Wait for the user's response before proceeding.
 
 ---
 
-## Step 1: Find or create the board
+### If the user chooses option 1 (existing board)
 
-### Find existing board
+Use whatever name or URL they provide. If they gave a URL, extract the board ID directly from it (format: `monday.com/boards/{id}`). If they gave a name, search for it:
 
 ```
-search(searchTerm="Pricing Intelligence", searchType="BOARD")
+search(searchTerm="{user-provided name}", searchType="BOARD")
 ```
 
-If a result named "Pricing Intelligence" is returned:
 - Extract the board ID from the result (strip the `board-` prefix — the tool returns `board-123456`, pass `123456` as the numeric ID)
-- Skip to Step 2
+- If no match is found, tell the user and ask them to try again or choose option 2
 
-### Create board (first use only)
+Skip to Step 2.
 
-If no result is found, first fetch available workspaces:
+---
+
+### If the user chooses option 2 (create new board)
+
+Ask for a board name:
+
+> "What should I name the board? (default: 'Pricing Intelligence')"
+
+If the user skips, use `Pricing Intelligence` as the name.
+
+Then fetch available workspaces:
 
 ```
 list_workspaces()
@@ -34,13 +49,13 @@ list_workspaces()
 
 Present the workspace list to the user (name + ID) and ask:
 
-> "The Pricing Intelligence board doesn't exist yet. Which workspace should I create it in?"
+> "Which workspace should I create the board in?"
 
-Wait for the user's selection. Then create the board in the chosen workspace:
+Wait for the user's selection. Then create the board:
 
 ```
 create_board(
-  boardName="Pricing Intelligence",
+  boardName="{chosen name}",
   boardKind="private",
   boardDescription="Tracks pricing changes, company research, and market landscape scans from the Pricing Intelligence skill.",
   workspaceId={selected workspace id}
@@ -190,20 +205,20 @@ The `{period}` is always the period string passed to `get_company_history` or `g
 After all items are created, add one line at the end of your response:
 
 ```
-Logged to [Pricing Intelligence](https://monday.com/boards/{board_id}) on monday.
+Logged to [{board name}](https://monday.com/boards/{board_id}) on monday.
 ```
 
 Do not make this into a separate section or elaborate on it — one line is enough.
 
 ---
 
-## Step 5: Offer to create a monday doc
+## Step 5: Create the monday doc
 
-Immediately after Step 4, ask the user once:
+For every item logged, always create a doc attached to the board item — no user prompt needed. Run `create_doc` calls in parallel with the activity update from Step 3.
 
-> "Want me to create a monday doc with the full research detail?"
+**Before composing the doc markdown:** run the Cloudinary probe from [visual-diff.md](visual-diff.md) Steps 1a–1d for every item (monitoring, research, teardown, digest). This is mandatory and free. If the probe finds before/after snapshots, embed them in the doc. If it finds nothing, proceed without images — do not add placeholders.
 
-**If yes:** for each item logged, call `create_doc` to attach a doc directly to that board item:
+For each item logged, call `create_doc` to attach a doc directly to that board item:
 
 ```
 create_doc(
@@ -318,7 +333,7 @@ For monitoring sessions with multiple companies: one doc per company, each attac
 
 For landscape scans: one doc for the full scan with one section per company that had changes.
 
-**If no:** skip silently. Do not ask again in the same session.
+The doc is always created. Do not ask the user whether they want one.
 
 ---
 

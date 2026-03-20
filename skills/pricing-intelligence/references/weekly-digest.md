@@ -53,6 +53,41 @@ Scan each page for A/B testing tool signatures (Optimizely, Statsig, VWO, Launch
 
 ---
 
+## Step 2b: Lightweight sentiment pass for top changes
+
+After Step 2, identify the top 2–3 highest-signal changes from the `get_pricing_news()` output (prioritise: Price move > Structure change > Add-on expansion > AI pricing signal). For **those changes only**, run a focused community sentiment pass. Run all searches in parallel.
+
+**For each of the top 2–3 companies:**
+
+```
+# Reddit + HN — candid user reactions
+WebSearch(query='"{Company}" pricing site:reddit.com OR site:news.ycombinator.com 2026')
+WebSearch(query='"{Company}" "price increase" OR "too expensive" OR "pricing change" site:reddit.com')
+
+# LinkedIn — operator and practitioner commentary
+WebSearch(query='"{Company}" pricing site:linkedin.com/pulse 2025 OR 2026')
+WebSearch(query='"{Company}" pricing change founders operators site:linkedin.com 2026')
+
+# X/Twitter — real-time reactions
+WebSearch(query='"{Company}" pricing site:x.com OR site:twitter.com 2026')
+WebSearch(query='"{Company}" "price increase" OR "pricing" site:x.com')
+```
+
+**Scope rules:**
+- Run this for the top 2–3 changes only — not every watchlist company
+- Do not run for "Soft signal" or "Testing signal" classified changes — only for confirmed price moves, structure changes, add-on expansions, and AI pricing signals
+- If a company has no detectable public discussion, note "No public signal" and move on — do not pad
+- Time-box: if searches return nothing useful after 6 calls, stop and proceed to Step 3
+
+**Capture per company:**
+- Overall tone: Positive / Mixed / Negative / No signal
+- 1–2 representative quotes with source URL (prioritise Reddit/HN for candor, X for recency, LinkedIn for operator insight)
+- Whether the reaction is absorbing the change or showing switching intent
+
+This data feeds directly into the **Community pulse** section of the digest output.
+
+---
+
 ## Step 3: Classify changes
 
 For each change detected (from MCP + web signals), assign a category:
@@ -115,6 +150,28 @@ Output the digest in this exact structure. Keep it scannable — executives and 
 
 - **{Company}:** {Signal} — {what it suggests and when to expect a move}
 - **{Company}:** {Signal}
+
+---
+
+## Community pulse
+
+{Sentiment findings from Step 2b — only for the top 2–3 highest-signal changes. Omit this section entirely if no public signal was found.}
+
+### {Company}
+**Tone:** {Positive / Mixed / Negative / No signal}  
+**Sources checked:** Reddit · HN · LinkedIn · X/Twitter  
+> "{representative quote}" — [{source}]({url})  
+> "{representative quote}" — [{source}]({url})  
+**Read:** {1 sentence — is the market absorbing this or showing switching intent?}
+
+### {Company 2}
+**Tone:** {Positive / Mixed / Negative / No signal}  
+**Sources checked:** ...  
+> "{quote}" — [{source}]({url})  
+**Read:** {1 sentence}
+
+{If no public discussion was found for any top changes:}
+*No public community signal detected for top changes this week.*
 
 ---
 

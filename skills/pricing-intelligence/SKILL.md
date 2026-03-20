@@ -98,7 +98,7 @@ All tools are free unless marked with credit cost.
 
 ## Monday.com logging
 
-Every workflow automatically logs its output to the **Pricing Intelligence** board on monday.com after delivering results to the user.
+Every workflow logs its output to the user's chosen monday.com board after delivering results. The board is selected at the start of the first logging call in a session — see [monday-logging.md](references/monday-logging.md) for the full flow.
 
 Full setup and item creation logic: [monday-logging.md](references/monday-logging.md)
 
