@@ -195,6 +195,20 @@ Create a recurring monday.com item to prompt the weekly run:
 3. Assign to self
 4. When the item fires, trigger the digest in your AI assistant
 
+### Option 4: Claude Cowork — fully automatic (no manual trigger needed)
+
+If running in Claude Cowork, use `create_scheduled_task` to schedule the digest to run every Monday at 9am automatically — no manual trigger needed.
+
+```
+create_scheduled_task(
+  name="Weekly pricing digest",
+  schedule="every Monday at 9:00am",
+  prompt="Run my weekly pricing digest"
+)
+```
+
+This is the lowest-friction option — the digest runs and delivers results without the user needing to open a chat or type anything.
+
 ### What to tell the user after first digest
 
 After the first digest runs, say:
