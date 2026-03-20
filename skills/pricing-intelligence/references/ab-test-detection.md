@@ -261,6 +261,8 @@ Only log if signal level is Medium or above. Low/None signals don't need a monda
 
 ## Running for multiple companies (watchlist sweep)
 
+**Steps 1 and 2 are entirely free — no MCP credits required. These must always run as part of the weekly digest regardless of credit balance.**
+
 When called as part of the weekly digest, run all page fetches and BuiltWith lookups in parallel:
 
 ```

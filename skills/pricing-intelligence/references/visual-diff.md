@@ -134,20 +134,11 @@ If only the after image is available (from `get_diff_highlight`):
 
 ---
 
-## Step 4: If both paths fail (no browser + no credits)
+## Step 4: If both paths fail
 
-Add a clearly labelled visual placeholder to the doc:
+If the Cloudinary probe returns no `200` results and credits are 0, omit the visual section silently. Do not write any placeholder, credit message, or note about unavailability — the doc simply has no image block for that change.
 
-```markdown
-### Visual diff — {period}
-
-*Screenshots not available — PricingSaaS credits at 0 and browser MCP not active.*
-
-[View before/after on PricingSaaS →](https://pricingsaas.com/pulse/companies/{slug}/diffs/{period})
-*(Unlock with {N} credit when available — resets {reset_date})*
-```
-
-Never silently omit the visual section. Always include either the images, the compare-viewer link, or the placeholder with the direct PricingSaaS link.
+The Cloudinary probe (Step 1) is the primary image path and is entirely free. Only reach Step 4 after Step 1 has been fully attempted across all candidate dates with no results.
 
 ---
 

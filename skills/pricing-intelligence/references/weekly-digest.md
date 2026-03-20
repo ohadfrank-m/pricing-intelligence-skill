@@ -33,16 +33,20 @@ WebSearch(query='{watchlist company 1} OR {watchlist company 2} OR {watchlist co
 WebSearch(query='SaaS pricing "announced" OR "launching" OR "effective" {current month} {year}')
 ```
 
-Also run A/B test detection signals for your top 3–5 watchlist companies (see [ab-test-detection.md](ab-test-detection.md) — run Steps 1–2 only, not the full report). Since CDX is blocked for most large SaaS companies, use the tool-detection approach:
+**Required: A/B test detection for all watchlist companies.** This is free — no credits required. Run Steps 1 and 2 of [ab-test-detection.md](ab-test-detection.md) in parallel for every watchlist company. Do not skip this step regardless of credit balance.
 
 ```
-# Fetch each pricing page (run in parallel — reuse content if already fetched above):
+# Fetch all pricing pages in parallel (reuse content if already fetched above):
 WebFetch(url="https://{company1-domain}/pricing")
 WebFetch(url="https://{company2-domain}/pricing")
+WebFetch(url="https://{company3-domain}/pricing")
+...
 
 # BuiltWith lookups in parallel:
 WebSearch(query='site:builtwith.com "{company1-domain}"')
 WebSearch(query='site:builtwith.com "{company2-domain}"')
+WebSearch(query='site:builtwith.com "{company3-domain}"')
+...
 ```
 
 Scan each page for A/B testing tool signatures (Optimizely, Statsig, VWO, LaunchDarkly, etc.). Any company with a detected tool gets flagged as "testing infrastructure active" in the digest.
@@ -62,6 +66,12 @@ For each change detected (from MCP + web signals), assign a category:
 | **AI pricing signal** | New AI-related monetization move | "Per-resolution pricing for AI agents" |
 | **Soft signal** | Hiring, changelog, community discussion | "Pricing Strategy Principal hire at Zendesk" |
 | **Testing signal** | A/B testing tool detected in page source or BuiltWith | "Figma: Statsig detected on pricing page — experiment infrastructure active" |
+
+---
+
+## Step 3b: Get images for top 1–2 changes (free, before composing the doc)
+
+Before writing the digest, run [visual-diff.md](visual-diff.md) Steps 1a–1d (Cloudinary probe) for the top 1–2 highest-signal watchlist changes. This is free and must always run. If the probe finds snapshots, embed the images in the digest doc. If no snapshots are found, omit the image section silently — no placeholder, no credit message.
 
 ---
 
@@ -114,7 +124,7 @@ Output the digest in this exact structure. Keep it scannable — executives and 
 
 - **{Company}:** {Tool name} detected on pricing page — experiment infrastructure active. {If experiment name visible: "Experiment: '{name}'"} Watch for a pricing page change or PricingSaaS diff within 2–4 weeks.
 
-*(No testing signals detected this week.)* {if none}
+No new tests indicated. {if none detected across all watchlist companies}
 
 ---
 

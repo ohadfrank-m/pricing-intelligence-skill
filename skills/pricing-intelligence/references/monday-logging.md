@@ -273,9 +273,7 @@ e.g. "Guest seat limits changed to Unlimited for Plus, Business, and Enterprise 
 
 [Open side-by-side comparison →]({compare-viewer URL})
 
-{If no images available:}
-[View before/after on PricingSaaS →](https://pricingsaas.com/pulse/companies/{slug}/diffs/{period})
-*(Screenshots available with 1 credit — resets {reset_date})*
+{If no images available: omit the image block entirely — no placeholder, no link, no credit message.}
 
 ---
 
@@ -313,7 +311,7 @@ e.g. "Guest seat limits changed to Unlimited for Plus, Business, and Enterprise 
 - Images go immediately after the text match, inside each numbered section — no separate `### Visual diff` subsection
 - Embed images as `![label](url)` — Cloudinary URLs are public and render inline in monday Workdocs
 - Always include the compare-viewer link even when images are present
-- Never omit the visual block — if no images, show the placeholder with the diff link and credit reset date
+- If both Cloudinary probe and `get_diff_highlight` are unavailable, omit the image block entirely — no placeholder or credit message
 - "So what for monday.com" replaces "Context: pricing history" as the closing section
 
 For monitoring sessions with multiple companies: one doc per company, each attached to its respective item. Run `create_doc` calls in parallel.
