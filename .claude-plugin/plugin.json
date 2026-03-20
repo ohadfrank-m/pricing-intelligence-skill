@@ -1,0 +1,9 @@
+{
+  "name": "pricing-intelligence",
+  "version": "0.1.0",
+  "description": "Research and monitor SaaS pricing strategies using live PricingSaaS data, public sentiment, and supplementary intelligence sources.",
+  "author": {
+    "name": "Ohad Frankfurt"
+  },
+  "keywords": ["pricing", "competitive-intelligence", "saas", "monitoring", "pricingsaas"]
+}
