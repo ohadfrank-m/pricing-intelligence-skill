@@ -333,6 +333,95 @@ For monitoring sessions with multiple companies: one doc per company, each attac
 
 For landscape scans: one doc for the full scan with one section per company that had changes.
 
+#### Company research doc template
+
+For `company-research` workflow items, the doc follows the output format from [company-research.md](company-research.md). Always include these sections in order:
+
+```markdown
+# {Company} — Pricing Intelligence Report
+
+*Research date: {date} | Source: {domain}/pricing{, PricingSaaS tracking: active/not tracked}*
+
+---
+
+## Executive summary
+
+- **What we found:** {single most important pricing fact}
+- **What it signals:** {strategic implication}
+- **Recommended action:** {one specific thing monday.com should do or test}
+
+---
+
+## Pricing structure
+
+| Plan | Monthly | Annual | Model | Notes |
+|------|---------|--------|-------|-------|
+| {Plan A} | ${x}/mo | ${x}/mo | per user / flat / usage | |
+
+---
+
+## Pricing model analysis
+
+- Value metric: {what they charge for}
+- Tier differentiation: {what changes between tiers}
+- Packaging logic: {what it signals about target buyer}
+- Freemium / trial: {conversion mechanism if applicable}
+
+---
+
+## Pricing history
+
+{Summary from discovery_only scan. If no history: "No tracked history on PricingSaaS yet."}
+
+---
+
+## Enrichment findings
+
+{Wayback Machine, changelog, earnings, job postings — omit sections with no signal}
+
+---
+
+## A/B testing status
+
+- **Tools detected:** {list, or "None found"}
+- **Classification:** {No active testing / Infrastructure present / Active conversion test / Confirmed A/B test}
+- **Experiment metadata:** {visible details, or "Not visible in page source"}
+- **Read:** {1 sentence on what this signals about upcoming page changes}
+
+---
+
+## Community pulse
+
+**Tone:** {Positive / Mixed / Negative / No signal}
+**Sources checked:** Reddit · HN · LinkedIn · X/Twitter
+> "{quote}" — [{source}]({url}), {date}
+> "{quote}" — [{source}]({url}), {date}
+**Read:** {1 sentence — absorbing the pricing or showing switching intent?}
+
+---
+
+## Current pricing page
+
+![{Company} pricing page — current state]({Cloudinary_url or Thum.io_url})
+
+[View live pricing page →]({pricing_page_url})
+
+---
+
+## Strategic read
+
+{2-3 sentences on positioning, growth motion, expansion strategy}
+
+---
+
+## So what for monday.com
+
+- **Pricing headroom:** {specific comparison}
+- **Positioning implication:** {packaging or tier structure insight}
+- **Experiment to consider:** {hypothesis, metric, tier}
+- **Threat signal:** {pricing trajectory risk}
+```
+
 The doc is always created. Do not ask the user whether they want one.
 
 ---

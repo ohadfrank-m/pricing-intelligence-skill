@@ -23,6 +23,23 @@ Extract and structure:
 - Employee count (company size proxy)
 - logo_url (for any report header)
 
+## Step 2b: A/B test detection (automatic — always run)
+
+Reuse the pricing page fetch from Step 2. Run Steps 1 and 2 of [ab-test-detection.md](ab-test-detection.md) in parallel — zero credit cost:
+
+```
+WebFetch(url="https://{domain}/pricing")   # reuse if already fetched above
+WebSearch(query='site:builtwith.com "{domain}"')
+```
+
+Scan the page source for testing tool signatures: Optimizely, Statsig, VWO, LaunchDarkly, AB Tasty, GrowthBook, PostHog, Split.io, Unleash, ConfigCat, Kameleoon. Record:
+- Tools found (or "None detected")
+- Whether experiment names or variant IDs are visible in page source (e.g., `window.optimizely`, `window._vwo_exp`)
+
+This feeds directly into the **A/B testing status** section of the output format. If `WebFetch` fails, note "page unreachable" and continue — do not block the workflow.
+
+---
+
 ## Step 3: Check pricing history (free preview)
 
 ```
@@ -129,13 +146,23 @@ search_pricing_knowledge(query="{company's category} pricing strategy")
 
 Free. Run both in parallel.
 
-## Step 5: Sentiment check (offer to user)
+## Step 5: Community sentiment (automatic — lightweight pass)
 
-After delivering the main analysis, ask once:
+Run in parallel with Step 4 enrichment — do not wait for Step 4 to complete first. Use the focused query set from [sentiment-research.md](sentiment-research.md) Step 1 — Reddit, HN, LinkedIn, and X only. Do not run G2/Capterra or publication tiers unless the user explicitly asks for the full sentiment deep-dive.
 
-> "Want me to pull public sentiment on {Company}'s pricing — what customers and operators are saying on Reddit, HN, and G2?"
+```
+# Run all four in parallel:
+WebSearch(query='"{Company}" pricing site:reddit.com OR site:news.ycombinator.com 2026')
+WebSearch(query='"{Company}" "price increase" OR "too expensive" OR "pricing change" site:reddit.com')
+WebSearch(query='"{Company}" pricing site:linkedin.com/pulse 2025 OR 2026')
+WebSearch(query='"{Company}" pricing site:x.com OR site:twitter.com 2026')
+```
 
-If yes, run [sentiment-research.md](sentiment-research.md) and append results to the output.
+Capture: overall tone (Positive / Mixed / Negative / No signal), 1–2 representative quotes with source URLs, and whether the market is absorbing the pricing or showing switching intent.
+
+This feeds directly into the **Community pulse** section of the output format. If no public discussion is found, note "No public signal" — do not pad with filler.
+
+After delivering the full output, offer once: "Want the full sentiment deep-dive including G2 reviews, Capterra, publications, and analyst commentary?"
 
 ## Step 6: Check if missing from PricingSaaS
 
@@ -208,6 +235,21 @@ Include a section for each enrichment method that returned meaningful data:
 - **Job postings:** Note any open monetization/pricing/RevOps roles and their implication.
 
 Omit sections where no useful data was found — do not pad with "no signal found" filler.
+
+**A/B testing status**
+- **Tools detected:** {list, or "None found"}
+- **Classification:** {No active testing / Infrastructure present / Active conversion test / Active pricing launch iteration / Confirmed A/B test}
+- **Experiment metadata:** {visible details from page source, or "Not visible"}
+- **Read:** {1 sentence — what this signals about upcoming pricing page changes, e.g. "Statsig is active but no experiment metadata is visible — testing infrastructure in place, watch for a page change within 4–8 weeks."}
+
+**Community pulse**
+**Tone:** {Positive / Mixed / Negative / No signal}
+**Sources checked:** Reddit · HN · LinkedIn · X/Twitter
+> "{representative quote}" — [{source name}]({url}), {date}
+> "{representative quote}" — [{source name}]({url}), {date}
+**Read:** {1 sentence — is the market absorbing this pricing or showing switching intent?}
+
+*If no public discussion found: "No public signal detected across Reddit, HN, LinkedIn, and X — pricing is either undiscussed or too recent for community reaction."*
 
 **Strategic read**
 2–3 sentences: what the pricing signals about the company's positioning, growth motion (PLG vs. SLG), and expansion strategy. Flag anything unusual or competitively significant.
