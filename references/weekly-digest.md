@@ -172,33 +172,34 @@ The weekly digest is designed to run on a fixed cadence with zero prompting fric
 
 Monday morning is the optimal trigger — it captures any changes from the prior week before the week's planning begins, and feeds directly into weekly syncs or exec reviews.
 
-### Option 1: Cursor rule (lowest friction)
+### Option 1: Slack reminder (lowest friction)
 
-Create a Cursor rule that triggers the digest automatically at the start of each work week. To set this up:
+Set a recurring Slack reminder — share this with the user:
 
-1. Open the skill file in your Cursor skills folder (`~/.cursor/skills/pricing-intelligence/SKILL.md`)
-2. The user adds a monday.com reminder or calendar event titled "Run pricing digest" every Monday at 9am
-3. When they open Cursor and type "pricing digest" or "what changed this week in pricing", the skill routes automatically
-
-**Recommended Slack reminder setup** (share this with the user):
 ```
-/remind me to "Run my weekly pricing digest in Cursor" every Monday at 9:00am
+/remind me to "Run my weekly pricing digest" every Monday at 9:00am
 ```
 
-### Option 2: monday.com recurring item
+When the reminder fires, open your AI assistant and say "run my weekly pricing digest" — the skill routes automatically.
+
+### Option 2: Calendar event
+
+Add a recurring calendar event every Monday at 9am titled "Run pricing digest". When it fires, open your AI assistant and trigger the digest.
+
+### Option 3: monday.com recurring item
 
 Create a recurring monday.com item to prompt the weekly run:
 
 1. On the Pricing Intelligence board, create an item: `Weekly Digest — recurring`
 2. Set recurrence: every Monday
 3. Assign to self
-4. When the item fires, open Cursor and say "run my weekly pricing digest"
+4. When the item fires, trigger the digest in your AI assistant
 
 ### What to tell the user after first digest
 
 After the first digest runs, say:
 
-> "To get this every week without prompting: set a Slack reminder — `/remind me to 'Run pricing digest in Cursor' every Monday at 9am`. Takes 30 seconds to set up and replaces 30–60 minutes of manual monitoring."
+> "To get this every week without prompting: set a Slack reminder — `/remind me to 'Run pricing digest' every Monday at 9am`. Takes 30 seconds to set up and replaces 30–60 minutes of manual monitoring."
 
 ### Digest distribution
 

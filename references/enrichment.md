@@ -2,6 +2,8 @@
 
 Supplementary research techniques that add context beyond PricingSaaS data. Call these from any workflow to deepen the analysis. All methods use `WebSearch` or `WebFetch` — zero credit cost.
 
+**WebFetch failure handling:** If any `WebFetch` call fails (timeout, domain blocked, 4xx/5xx), skip that source silently and continue with the remaining sources. Never block or stall a workflow on a single failed fetch. Document which sources returned useful data in the output.
+
 ---
 
 ## 1. Wayback Machine — pricing page history

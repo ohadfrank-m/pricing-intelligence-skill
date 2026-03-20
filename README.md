@@ -46,19 +46,25 @@ If the server requires an API key, get one at [pricingsaas.com](https://pricings
 
 ### 2. monday.com MCP (optional)
 
-The skill automatically logs all outputs to a "Pricing Intelligence" board on monday.com. This requires the monday.com MCP to be connected (`plugin-monday.com-monday`). If it's not connected, logging is skipped silently — all other functionality works without it.
+The skill automatically logs all outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection with access to: `search`, `create_board`, `create_column`, `get_board_info`, `create_item`, `create_doc`, `create_update`. If not connected, logging is skipped silently — all other functionality works without it.
 
 ## Installation
 
-1. Clone this repo into your Cursor skills folder:
+### Cursor
 
 ```bash
 git clone https://github.com/ohadfrank-m/pricing-intelligence-skill ~/.cursor/skills/pricing-intelligence
 ```
 
-2. In Cursor, go to **Settings → Features → Agent Skills** and verify the skill appears, or add the path manually.
+In Cursor, go to **Settings → Features → Agent Skills** and verify the skill appears, or add the path manually.
 
-3. Verify connectivity by asking Cursor: `"check pricing intelligence status"` — the skill will call `get_status()` on the PricingSaaS MCP and confirm the connection.
+### Claude / other AI environments
+
+Clone or download this repo and place it in your environment's skills directory. The skill is a standard set of markdown files — `SKILL.md` is the entrypoint, and `references/` contains the workflow files. Follow your environment's instructions for registering a skill folder.
+
+### Verify
+
+After installing, ask your AI assistant: `"check pricing intelligence status"` — the skill will call `get_status()` on the PricingSaaS MCP and confirm the connection.
 
 ## Usage
 

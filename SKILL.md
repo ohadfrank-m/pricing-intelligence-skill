@@ -2,34 +2,17 @@
 name: pricing-intelligence
 description: >-
   Research and monitor SaaS pricing strategies using live PricingSaaS data, public sentiment, and
-  supplementary intelligence sources. Use when the user wants to: research how a specific company
-  prices (triggers: "how does X price", "pricing strategy of X", "research X pricing", "break down
-  X's pricing", "what does X charge", "X pricing model", "X packaging", "how did X's pricing page
-  change"); research pricing trends in a category or industry (triggers: "pricing trends in", "how
-  does the market price", "competitive pricing landscape", "who competes with X and how do they
-  price", "category pricing", "pricing in [industry]", "map the market"); monitor and track pricing
-  changes (triggers: "monitor pricing", "track pricing changes", "what changed in pricing", "pricing
-  news", "watchlist", "add to watchlist", "who changed pricing", "pricing updates"); analyze
-  customer and market sentiment about pricing (triggers: "what do people think about X's pricing",
-  "pricing sentiment", "customer reactions to X", "how is the market reacting", "pricing
-  controversy"); tear down a competitor's pricing page (triggers: "tear down X's pricing page",
-  "analyze how X presents pricing", "pricing page teardown", "how does X's page work"); build a
-  competitive battlecard (triggers: "pricing battlecard for X", "we're losing deals to X on price",
-  "competitive pricing comparison", "how do we handle X pricing objections"); run a weekly pricing
-  digest (triggers: "weekly pricing digest", "what changed in pricing this week", "pricing brief",
-  "weekly pricing update"); or detect A/B testing on a competitor's pricing page (triggers: "is X
-  testing their pricing page", "pricing page experiments at X", "is X A/B testing pricing").
-  track changes to free tiers and trial structures (triggers: "has X changed their free tier",
-  "did X restrict their freemium", "track trial changes in {category}", "freemium changes");
-  research real deal economics and negotiation leverage (triggers: "what do people actually pay for
-  X", "typical discount for X", "how to negotiate X pricing", "real cost of X", "negotiation
-  intelligence for X"); set up a category-level watchlist to track all competitors in a space at
-  once (triggers: "track {category} pricing", "add all {category} competitors to watchlist", "monitor
-  the {category} market", "set up category watchlist"); or schedule and automate the weekly digest
-  (triggers: "schedule my pricing digest", "automate pricing monitoring", "how do I get this every
-  week"). Every company research output includes a 'So what for monday.com' section and an exec
-  summary ready to share with Orly or paste into Slack. Requires PricingSaaS MCP connected. See
-  setup section in this skill.
+  supplementary intelligence sources. Triggers: "how does X price", "pricing strategy of X",
+  "research X pricing", "pricing trends in [industry]", "competitive pricing landscape",
+  "who competes with X", "monitor pricing", "track pricing changes", "what changed this week",
+  "pricing watchlist", "what do people think about X's pricing", "pricing sentiment",
+  "tear down X's pricing page", "pricing page teardown", "pricing battlecard for X",
+  "losing deals to X on price", "weekly pricing digest", "pricing brief",
+  "has X changed their free tier", "freemium changes", "what do people actually pay for X",
+  "how to negotiate X pricing", "is X A/B testing their pricing page",
+  "set up category watchlist", "schedule pricing digest", "automate pricing monitoring".
+  Every company research output includes a 'So what for monday.com' section.
+  Requires PricingSaaS MCP. See setup section in this skill.
 ---
 
 # Pricing intelligence
@@ -38,13 +21,25 @@ Research specific company pricing strategies, map industry pricing landscapes, a
 
 ## Prerequisites: PricingSaaS MCP
 
-The PricingSaaS MCP (`https://mcp.pricingsaas.com`) is already registered in `~/.cursor/mcp.json`.
+This skill requires the PricingSaaS MCP server (`https://mcp.pricingsaas.com`) to be connected in your AI environment.
 
-If the connection fails, the server may require an API key. To add one:
-1. Get your key at [pricingsaas.com](https://pricingsaas.com)
-2. Add it to `~/.cursor/mcp.json` under the `pricingsaas` entry: `"headers": { "authorization": "Bearer YOUR_API_KEY" }`
+**Cursor:** Add to `~/.cursor/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "pricingsaas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.pricingsaas.com"]
+    }
+  }
+}
+```
 
-Verify connectivity by calling `get_status()` before proceeding. If it fails, prompt the user to check their API key.
+**Claude / other environments:** Follow your environment's MCP configuration instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
+
+**API key:** If the connection fails, the server may require an API key. Get one at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token in the Authorization header.
+
+Verify connectivity by calling `get_status()` before proceeding. If it fails entirely (not just 0 credits), inform the user the PricingSaaS connection is unavailable — see the connection fallback rule in the MCP tool reference section below.
 
 ---
 
@@ -86,6 +81,7 @@ All tools are free unless marked with credit cost.
 | `get_company_history(slug)` | **1 credit/diff** | Full pricing change history |
 | `get_diff_highlight(slug, period, query)` | **1 credit** | Visual before/after screenshot of a price change |
 | `add_to_watchlist(slugs=[...])` | Free | Add companies to monitoring watchlist |
+| `get_watchlist()` | Free | List all companies currently on the watchlist |
 | `get_pricing_news()` | Free | Recent pricing changes across all tracked companies |
 | `fetch_diffs(scope, period, period_type)` | **2 credits** | Detailed change data for watchlist or global scope |
 | `search_pricing_knowledge(query)` | Free | Pricing strategy frameworks and best practices |
@@ -96,6 +92,8 @@ All tools are free unless marked with credit cost.
 
 **Credit-zero fallback:** When `get_status()` returns 0 credits, do NOT skip pricing history. Automatically run the credit-zero fallback protocol ([enrichment.md](references/enrichment.md) Method 6) for any period flagged as a high-signal change — reconstructing before/after values from Wayback Machine, third-party trackers, community posts, and changelogs. Label all reconstructed output clearly. No user prompt needed to activate this — it runs silently whenever credits are depleted.
 
+**Connection failure fallback:** If `get_status()` fails entirely (timeout, unreachable, auth error — not just 0 credits), inform the user: "The PricingSaaS connection is currently unavailable. I can still run enrichment-only research using Wayback Machine snapshots, web signals, and community sources — this covers most of what the skill does without live MCP data. Want me to proceed?" If yes, route directly to [enrichment.md](references/enrichment.md) for all applicable methods.
+
 ---
 
 ## Monday.com logging
@@ -104,7 +102,7 @@ Every workflow automatically logs its output to the **Pricing Intelligence** boa
 
 Full setup and item creation logic: [monday-logging.md](references/monday-logging.md)
 
-The monday.com MCP (`plugin-monday.com-monday`) is already connected. Tools used: `search`, `create_board`, `create_column`, `get_board_info`, `create_item`.
+Requires a monday.com MCP connection with access to: `search`, `create_board`, `create_column`, `get_board_info`, `create_item`, `create_doc`, `create_update`. If not connected, logging is skipped silently — all other skill functionality works without it.
 
 ---
 
