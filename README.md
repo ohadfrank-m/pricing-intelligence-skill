@@ -67,17 +67,21 @@ The skill automatically logs all outputs to a "Pricing Intelligence" board on mo
 
 ## Installation
 
+### Claude Cowork
+
+Install directly as a plugin from the Cowork plugin browser, or clone the repo and install manually — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
+
 ### Cursor
 
 ```bash
-git clone https://github.com/ohadfrank-m/pricing-intelligence-skill ~/.cursor/skills/pricing-intelligence
+git clone https://github.com/ohadfrank-m/pricing-intelligence-skill
 ```
 
-In Cursor, go to **Settings → Features → Agent Skills** and verify the skill appears, or add the path manually.
+Then in Cursor, go to **Settings → Features → Agent Skills → Add path** and point to the `skills/pricing-intelligence/` subdirectory inside the cloned repo.
 
-### Claude / other AI environments
+### Claude Code / other AI environments
 
-Clone or download this repo and place it in your environment's skills directory. The skill is a standard set of markdown files — `SKILL.md` is the entrypoint, and `references/` contains the workflow files. Follow your environment's instructions for registering a skill folder.
+Clone or download this repo. The skill entrypoint is `skills/pricing-intelligence/SKILL.md`. Follow your environment's instructions for registering a skill folder, pointing to `skills/pricing-intelligence/`.
 
 ### Verify
 
@@ -99,22 +103,29 @@ Just talk to your AI assistant naturally. Example triggers:
 ## File structure
 
 ```
-SKILL.md                          # Main entrypoint — routing logic and MCP tool reference
-references/
-  company-research.md             # Single company deep-dive workflow
-  trend-research.md               # Category / industry landscape workflow
-  monitoring.md                   # Watchlist and pricing change tracking
-  battlecard-generator.md         # Competitive battlecard generation
-  weekly-digest.md                # Weekly pricing digest
-  ab-test-detection.md            # Pricing page A/B test detection
-  freemium-trial-tracker.md       # Free tier and trial structure changes
-  negotiation-intelligence.md     # Real deal economics and negotiation leverage
-  pricing-page-teardown.md        # Pricing page psychology and structure analysis
-  sentiment-research.md           # Customer and market sentiment analysis
-  category-watchlist.md           # Category-level watchlist setup
-  enrichment.md                   # Supplementary research methods (Wayback, job postings, etc.)
-  monday-logging.md               # monday.com board logging workflow
-  visual-diff.md                  # Visual before/after diff generation
+.claude-plugin/
+  plugin.json                     # Cowork plugin manifest
+.mcp.json                         # Bundled PricingSaaS MCP config (auto-loaded in Cowork)
+.gitignore
+README.md
+skills/
+  pricing-intelligence/
+    SKILL.md                      # Main entrypoint — routing logic and MCP tool reference
+    references/
+      company-research.md         # Single company deep-dive workflow
+      trend-research.md           # Category / industry landscape workflow
+      monitoring.md               # Watchlist and pricing change tracking
+      battlecard-generator.md     # Competitive battlecard generation
+      weekly-digest.md            # Weekly pricing digest
+      ab-test-detection.md        # Pricing page A/B test detection
+      freemium-trial-tracker.md   # Free tier and trial structure changes
+      negotiation-intelligence.md # Real deal economics and negotiation leverage
+      pricing-page-teardown.md    # Pricing page psychology and structure analysis
+      sentiment-research.md       # Customer and market sentiment analysis
+      category-watchlist.md       # Category-level watchlist setup
+      enrichment.md               # Supplementary research methods (Wayback, job postings, etc.)
+      monday-logging.md           # monday.com board logging workflow
+      visual-diff.md              # Visual before/after diff generation
 ```
 
 ## Credits
