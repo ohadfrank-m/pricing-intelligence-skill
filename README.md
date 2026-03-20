@@ -1,6 +1,8 @@
-# Pricing intelligence — Cursor Agent Skill
+# Pricing intelligence — AI Agent Skill
 
-A Cursor agent skill for researching and monitoring SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, and supplementary intelligence sources.
+An agent skill for researching and monitoring SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, and supplementary intelligence sources.
+
+Works in **Cursor**, **Claude** (via Claude Code or Cowork), and any AI environment that supports MCP and markdown-based skills.
 
 ## What it does
 
@@ -25,7 +27,7 @@ Every company research output includes a "So what" section covering pricing head
 
 This skill is powered by the [PricingSaaS MCP](https://mcp.pricingsaas.com).
 
-Add it to your `~/.cursor/mcp.json`:
+**Cursor** — add to `~/.cursor/mcp.json`:
 
 ```json
 {
@@ -38,7 +40,22 @@ Add it to your `~/.cursor/mcp.json`:
 }
 ```
 
-If the server requires an API key, get one at [pricingsaas.com](https://pricingsaas.com) and add it:
+**Claude Code** — add to your MCP config (typically `~/.claude/mcp.json` or via `claude mcp add`):
+
+```json
+{
+  "mcpServers": {
+    "pricingsaas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.pricingsaas.com"]
+    }
+  }
+}
+```
+
+**Claude Cowork / other environments** — follow your environment's MCP setup instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
+
+If the server requires an API key, get one at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token in the Authorization header:
 
 ```json
 "headers": { "authorization": "Bearer YOUR_API_KEY" }
@@ -68,7 +85,7 @@ After installing, ask your AI assistant: `"check pricing intelligence status"` �
 
 ## Usage
 
-Just talk to Cursor naturally. Example triggers:
+Just talk to your AI assistant naturally. Example triggers:
 
 - `"How does Notion price?"`
 - `"Map the project management pricing landscape"`
