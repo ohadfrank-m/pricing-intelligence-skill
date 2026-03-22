@@ -102,6 +102,20 @@ For each change detected (from MCP + web signals), assign a category:
 | **Soft signal** | Hiring, changelog, community discussion | "Pricing Strategy Principal hire at Zendesk" |
 | **Testing signal** | A/B testing tool detected in page source or BuiltWith | "Figma: Statsig detected on pricing page — experiment infrastructure active" |
 
+### Severity scoring
+
+After classifying each change, run the severity scoring framework from [severity-scoring.md](severity-scoring.md) on every change categorized as Price move, Structure change, Add-on expansion, Packaging shift, or AI pricing signal. Skip scoring for Soft signal and Testing signal categories.
+
+Sort all changes by severity score (highest first). The "Must-know this week" section only includes P0 (score 10–12) and P1 (score 7–9) changes. P2 changes (score 4–6) appear in "Changes by company." P3 changes (score 0–3) move to "Also this week" or are omitted if the digest is already long.
+
+### Knowledge base context
+
+Read the knowledge base (`Claude-Workspace/pricing-intelligence/knowledge-base.json`) and cross-reference companies with detected changes:
+
+- If a company has a KB entry, add historical context: "Previously researched on {date}. This is their {Nth} pricing change in the KB."
+- If the KB contains a `pattern` entry relevant to this week's changes, surface it: "This reinforces an existing pattern: {description} ({N} companies now)."
+- If no KB exists, proceed without context.
+
 ---
 
 ## Step 3b: Get images for top 1–2 changes (free, before composing the doc)
@@ -200,6 +214,20 @@ No new tests indicated. {if none detected across all watchlist companies}
 1. {Action}: {Rationale tied to a specific change detected}
 2. {Action}: {Rationale}
 3. {Action}: {Rationale}
+
+## Experiment backlog cross-reference
+
+{Read the experiments array from the knowledge base. If any digest change maps to an existing experiment hypothesis (same company, same tier, or same mechanism), surface it here.}
+
+{If matches found:}
+- This week's {Company} change reinforces experiment {id}: "{hypothesis title}" — urgency {updated level}
+- {Additional matches}
+
+{If no matches and a P0/P1 change was detected:}
+New experiment hypothesis generated: "{title}" — see full backlog with "show experiment backlog"
+
+{If no experiments exist yet:}
+No experiment backlog exists yet. Run a company deep-dive to start generating hypotheses.
 
 ---
 

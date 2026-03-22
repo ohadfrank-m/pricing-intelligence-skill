@@ -36,7 +36,17 @@ Store as "Your Company" data for the comparison.
 
 ## Step 2: Pull competitor data
 
-Run all in parallel:
+### Check knowledge base first
+
+Before fetching fresh data, check the knowledge base for an existing entry on this competitor:
+
+```
+Read(path="Claude-Workspace/pricing-intelligence/knowledge-base.json")
+```
+
+If the competitor has a KB entry with `last_researched` within the last 7 days, reuse `current_pricing`, `pricing_history_summary`, and `strategic_notes` from the KB instead of re-fetching. Still run the live pricing page fetch and objection search (these are fast and may surface new data).
+
+If the KB entry is older than 7 days or doesn't exist, run the full fetch:
 
 ```
 search_companies(query="{competitor name}")
@@ -222,6 +232,14 @@ Generated: {date} | Source: PricingSaaS + live page data
 | Don't let them say... | "{objection}" |
 | Our response | "{counter}" |
 ```
+
+---
+
+## Step 4b: Generate experiment hypotheses
+
+After building the battlecard, scan the "Where they win" section for findings that could be addressed by a pricing or packaging experiment on monday.com's side. For each such finding, run [hypothesis-engine.md](hypothesis-engine.md) to generate a structured experiment hypothesis.
+
+The hypothesis engine deduplicates against the existing backlog — if a similar experiment was already generated from a prior company-research session, it reinforces the existing hypothesis rather than creating a duplicate.
 
 ---
 

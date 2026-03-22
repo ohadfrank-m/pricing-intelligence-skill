@@ -2,6 +2,34 @@
 
 Deep-dive on a specific company's pricing strategy: current plans, pricing model, packaging logic, and historical changes.
 
+## Step 0: Check knowledge base
+
+Before starting research, check the knowledge base for prior data on this company:
+
+```
+Read(path="Claude-Workspace/pricing-intelligence/knowledge-base.json")
+```
+
+If the file exists and contains an entry for this company (match by name or slug):
+
+- Note `last_researched` date and `research_count`
+- Compare `current_pricing.plans` against what you'll pull fresh in Step 2 — flag any differences as "changes since last research"
+- Carry forward `monday_implications` and `strategic_notes` as context
+- Check `patterns` for any cross-company pattern involving this company
+
+If the KB has a recent entry (< 7 days old) and the user hasn't asked for a refresh, offer: "I have recent research on {Company} from {date}. Want me to show the existing analysis, or run a fresh deep-dive?"
+
+If the KB has no entry or the file doesn't exist, proceed to Step 1.
+
+Add a **Previous research** section to the output (after the exec summary) when KB data exists:
+
+```
+**Previous research**
+Last researched: {date} ({research_count} prior sessions)
+Key change since then: {delta description, or "No pricing changes detected"}
+Prior strategic notes: {1-2 sentences from strategic_notes}
+```
+
 ## Step 1: Resolve the company slug
 
 ```
@@ -280,6 +308,14 @@ After delivering the main output, ask once:
 > "Want me to generate a pricing battlecard — monday.com vs. {Company} — with plan comparison, objection handling, and negotiation intelligence? It goes directly to sales or product."
 
 If yes, run [battlecard-generator.md](battlecard-generator.md). Pre-populate Steps 2 and 2b with the data already gathered in this research session — do not re-fetch what you already have.
+
+---
+
+## Post-research: generate experiment hypothesis
+
+After delivering the main output, run [hypothesis-engine.md](hypothesis-engine.md) to extract a testable experiment from the "So what for monday.com" section. This runs silently — the engine appends one line to the output confirming the experiment was logged.
+
+If the "So what" section contains no actionable experiment signal (observational notes only), skip this step.
 
 ---
 

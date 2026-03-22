@@ -216,9 +216,21 @@ After delivering the summary, offer once:
 
 If yes, run [sentiment-research.md](sentiment-research.md) for the top 3–5 most significant companies in the landscape.
 
-## Step 10: Log to monday
+## Step 10: Persist to knowledge base
 
-After delivering the summary, follow [monday-logging.md](monday-logging.md) to log the results. For landscape scans, create one item representing the scan (not one per company).
+After delivering the summary and before monday logging, write all discovered companies to the knowledge base. For each company in the landscape:
+
+1. Read the KB: `Read(path="Claude-Workspace/pricing-intelligence/knowledge-base.json")`
+2. For each company, upsert a lightweight entry with: `current_pricing` (plans, pricing model, free tier), `category` (the landscape category), `domain`, `employee_count`
+3. Do not overwrite `strategic_notes`, `monday_implications`, or `sentiment_snapshot` if the company already has a KB entry from a prior deep-dive — those fields are higher-value than landscape-level data
+4. Run cross-company pattern detection per [knowledge-base.md](knowledge-base.md)
+5. Write the updated KB
+
+This step populates the knowledge base with baseline data for every company in the landscape, enabling severity scoring and cross-company pattern detection in future sessions — even for companies that haven't been individually researched yet.
+
+## Step 11: Log to monday
+
+After the KB write, follow [monday-logging.md](monday-logging.md) to log the results. For landscape scans, create one item representing the scan (not one per company).
 
 - Item name: `{Category} — Landscape`
 - Change Type: `Landscape Scan`
@@ -226,7 +238,7 @@ After delivering the summary, follow [monday-logging.md](monday-logging.md) to l
 - PricingSaaS link: leave blank (landscape scans have no single company diff URL)
 - Workflow: `trend-research`
 
-## Step 11: Recommend next steps
+## Step 12: Recommend next steps
 
 After the summary, offer 3 tailored follow-ups using specific company names and findings:
 

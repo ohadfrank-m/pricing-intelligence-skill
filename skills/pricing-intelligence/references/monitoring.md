@@ -226,6 +226,26 @@ While processing each diff period, check whether any change types match the free
 
 This requires no extra tool calls if you already have the diff data — just classify the change type against the freemium pattern table.
 
+### Severity scoring
+
+After collecting all changes and enrichment data, score every detected change using the severity scoring framework from [severity-scoring.md](severity-scoring.md). This requires the monday.com pricing reference from the knowledge base (`config.monday_pricing`).
+
+For each change, append the severity assessment to the output:
+
+```
+**Severity: P{tier} ({score}/12)**
+- Price proximity: {score}/3 — {rationale}
+- Segment overlap: {score}/3 — {rationale}
+- Change magnitude: {score}/3 — {rationale}
+- Strategic signal: {score}/3 — {rationale}
+```
+
+Sort all changes in the output by severity score (highest first). P0/P1 changes appear under "Critical changes", P2 under "Notable changes", P3 under "Logged" (or omit from the output entirely if the user prefers concise reports).
+
+### Hypothesis engine
+
+After scoring, run [hypothesis-engine.md](hypothesis-engine.md) for any change with a severity score of P0 or P1 that has a clear monday.com implication. The engine generates a structured experiment hypothesis and appends it to the experiment backlog in the knowledge base. One line is added to the output confirming the experiment was logged.
+
 ### Sentiment (offer after delivering changes)
 
 After the main change summary, ask once:

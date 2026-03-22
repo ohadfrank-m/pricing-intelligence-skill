@@ -60,6 +60,9 @@ Identify the user's primary intent and route to the appropriate workflow:
 | A/B test detection | "testing their pricing page", "A/B testing pricing", "pricing page experiments", "is X changing their page" | [ab-test-detection.md](references/ab-test-detection.md) |
 | Freemium / trial tracker | "changed their free tier", "restricting freemium", "trial change", "free plan limits", "did X remove freemium" | [freemium-trial-tracker.md](references/freemium-trial-tracker.md) |
 | Negotiation intelligence | "what do people actually pay", "typical discount", "how to negotiate X", "real cost", "negotiation leverage", "what can I get off" | [negotiation-intelligence.md](references/negotiation-intelligence.md) |
+| Proactive monitoring | "run daily monitor", "check for critical pricing changes", "set up pricing alerts", "run proactive monitoring" | [proactive-monitoring.md](references/proactive-monitoring.md) |
+| Knowledge base query | "show me what I know about X", "what's in my pricing knowledge base", "KB summary", "cross-company patterns", "what patterns have I seen" | [knowledge-base.md](references/knowledge-base.md) |
+| Experiment backlog | "show experiment backlog", "what experiments should I run", "quarterly experiment review", "review experiment backlog", "mark experiment as launched", "sync experiments to monday" | [hypothesis-engine.md](references/hypothesis-engine.md) |
 
 Enrichment methods (Wayback Machine, job postings, changelog mining, earnings calls, cross-company patterns) are embedded in the core workflows and called automatically when relevant. They are also documented in [enrichment.md](references/enrichment.md) for direct reference.
 
@@ -103,6 +106,28 @@ Every workflow logs its output to the user's chosen monday.com board after deliv
 Full setup and item creation logic: [monday-logging.md](references/monday-logging.md)
 
 Requires a monday.com MCP connection with access to: `search`, `create_board`, `create_column`, `get_board_info`, `create_item`, `create_doc`, `create_update`. If not connected, logging is skipped silently — all other skill functionality works without it.
+
+---
+
+## Knowledge base
+
+Every research session persists its findings to a local knowledge base at `Claude-Workspace/pricing-intelligence/knowledge-base.json`. This enables cross-session intelligence: prior research is loaded at session start, cross-company patterns are detected automatically, and the experiment backlog accumulates over time.
+
+**Session start:** Before routing to any workflow, check if the knowledge base file exists. If yes, read it. For company-research and battlecard workflows, look up the target company and surface prior research context in the output preamble.
+
+**Session end:** After every workflow's monday.com logging step, upsert the session's findings into the knowledge base. This happens automatically via [knowledge-base.md](references/knowledge-base.md).
+
+Full schema, read/write logic, cross-company pattern detection, and monday.com board sync: [knowledge-base.md](references/knowledge-base.md)
+
+---
+
+## Severity scoring
+
+Every detected pricing change is scored on 4 dimensions (price proximity to monday.com, segment overlap, change magnitude, strategic signal) for a total of 0–12 points, mapped to severity tiers P0–P3. This score drives alert urgency in proactive monitoring, digest prioritization, and experiment generation urgency.
+
+**Credit cost:** Zero. Severity scoring uses only knowledge base data and the monday.com pricing reference — no MCP credits consumed.
+
+Full framework with scoring tables and examples: [severity-scoring.md](references/severity-scoring.md)
 
 ---
 
