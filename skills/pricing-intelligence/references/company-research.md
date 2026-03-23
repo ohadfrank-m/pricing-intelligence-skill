@@ -111,6 +111,31 @@ For each result:
 
 Do NOT skip history analysis. Instead, run the credit-zero fallback protocol automatically — full instructions in [enrichment.md](enrichment.md) Method 6. It reconstructs the same information using Wayback Machine snapshots, third-party trackers, community posts, and changelogs. No user prompt needed.
 
+## Step 3b: Capture pricing page screenshots (mandatory, free — always run)
+
+Run the Cloudinary probe from [visual-diff.md](visual-diff.md) Steps 1a–1d immediately after Step 3, regardless of credit status. This is free and provides before/after screenshots for every high-signal change period.
+
+```bash
+# Probe candidate dates in parallel (slug from Step 1, dates from discovery_only periods):
+for d in {date1} {date2} {date3} ...; do
+  code=$(curl -s -o /dev/null -w "%{http_code}" \
+    "https://res.cloudinary.com/dd6dkaan9/image/upload/pricing_pages/{slug}_${d}.png")
+  echo "${d}: ${code}"
+done
+```
+
+From the `200` results, identify `cloudinary_before` and `cloudinary_after` for each high-signal period. Construct compare-viewer URLs per [visual-diff.md](visual-diff.md) Step 1d.
+
+**If no Cloudinary snapshots exist:** generate a Thum.io live screenshot as the current-state fallback:
+
+```
+https://image.thum.io/get/width/1280/crop/900/https://{domain}/pricing
+```
+
+**If Thum.io also fails:** omit images silently — do not add any placeholder.
+
+Store all image URLs for use in the output format and the monday doc (Step 7). Do NOT defer this step to monday logging — the images must be collected here so they are available when composing both the inline output and the doc.
+
 ## Step 4: Enrich with supplementary sources
 
 After pulling PricingSaaS data, run enrichment in parallel to add depth the MCP alone can't provide. See [enrichment.md](enrichment.md) for full instructions on each method.
