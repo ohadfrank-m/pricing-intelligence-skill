@@ -70,19 +70,23 @@ No changes detected for: {Company C}, {Company D}
 
 ### Detailed change data — weekly or monthly
 
-**Warn the user before calling:** this costs 2 credits.
+**Warn the user before calling:** this costs 1 credit per company (company scope) or 2 credits (global scope).
+
+For watchlist companies, call `fetch_diffs` once per company using `scope="company"` — run all calls in parallel:
 
 ```
-fetch_diffs(scope="watchlist", period="latest", period_type="weeks")
+fetch_diffs(scope="company", slug="{slug_1}", period="latest", period_type="weeks")
+fetch_diffs(scope="company", slug="{slug_2}", period="latest", period_type="weeks")
+# ... one call per watchlist company with changes
 ```
 
 Or for a specific period:
 
 ```
-fetch_diffs(scope="watchlist", period="{YYYY-MM}", period_type="months")
+fetch_diffs(scope="company", slug="{slug}", period="{YYYY-MM}", period_type="months")
 ```
 
-Or for global market changes (not just watchlist):
+Or for global market changes (not just watchlist) — costs 2 credits:
 
 ```
 fetch_diffs(scope="global", period="latest", period_type="weeks")
@@ -225,6 +229,26 @@ After analyzing changes across multiple companies in a session:
 While processing each diff period, check whether any change types match the freemium/trial pattern: `Capacity Decreased`, `Capacity Increased`, `Feature Removed`, `Feature Added`, `Plan Removed`, `Plan Added`, `Pricing Metric Changed`. If detected on a plan that appears to be a free, trial, or starter tier, automatically run [freemium-trial-tracker.md](freemium-trial-tracker.md) Step 4 (classification) and include the result in the output.
 
 This requires no extra tool calls if you already have the diff data — just classify the change type against the freemium pattern table.
+
+### Severity scoring
+
+After collecting all changes and enrichment data, score every detected change using the severity scoring framework from [severity-scoring.md](severity-scoring.md). This requires the monday.com pricing reference from the knowledge base (`config.monday_pricing`).
+
+For each change, append the severity assessment to the output:
+
+```
+**Severity: P{tier} ({score}/12)**
+- Price proximity: {score}/3 — {rationale}
+- Segment overlap: {score}/3 — {rationale}
+- Change magnitude: {score}/3 — {rationale}
+- Strategic signal: {score}/3 — {rationale}
+```
+
+Sort all changes in the output by severity score (highest first). P0/P1 changes appear under "Critical changes", P2 under "Notable changes", P3 under "Logged" (or omit from the output entirely if the user prefers concise reports).
+
+### Hypothesis engine
+
+After scoring, run [hypothesis-engine.md](hypothesis-engine.md) for any change with a severity score of P0 or P1 that has a clear monday.com implication. The engine generates a structured experiment hypothesis and appends it to the experiment backlog in the knowledge base. One line is added to the output confirming the experiment was logged.
 
 ### Sentiment (offer after delivering changes)
 

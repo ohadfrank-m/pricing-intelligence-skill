@@ -99,6 +99,25 @@ Store these IDs for use in Step 3.
 
 Create one item per company with changes. For landscape scans with no specific company, create one item per significant pattern identified.
 
+### Change Type status labels
+
+Each workflow sets the `Change Type` status column to one of these labels. These labels must be pre-configured on the status column (monday.com creates them automatically on first use):
+
+| Workflow | Change Type label |
+|----------|------------------|
+| Company research | `Research` |
+| Trend research | `Landscape` |
+| Monitoring | `Price Change`, `Plan Change`, `Feature Change`, or `Packaging Change` — pick the most significant change type |
+| Sentiment research | `Sentiment` |
+| Pricing page teardown | `Teardown` |
+| Battlecard | `Battlecard` |
+| Weekly digest | `Digest` |
+| A/B test detection | `A/B Test` |
+| Freemium / trial tracker | `Freemium Change` |
+| Negotiation intelligence | `Negotiation` |
+| Category watchlist | `Watchlist` |
+| Proactive monitoring | `Alert` |
+
 ### Item name format
 
 | Workflow | Name format | Example |
@@ -106,6 +125,15 @@ Create one item per company with changes. For landscape scans with no specific c
 | Company research | `{Company} — Research` | `Clay — Research` |
 | Trend research | `{Category} — Landscape` | `Project Management — Landscape` |
 | Monitoring (per company with changes) | `{Company} — {Period}` | `Figma — 2026W12` |
+| Sentiment research | `{Company} — Sentiment` | `Notion — Sentiment` |
+| Pricing page teardown | `{Company} — Page Teardown` | `HubSpot — Page Teardown` |
+| Battlecard | `{Company} vs monday.com — Battlecard` | `Asana vs monday.com — Battlecard` |
+| Weekly digest | `Pricing Digest — {Period}` | `Pricing Digest — 2026W12` |
+| A/B test detection | `{Company} — A/B Test Scan` | `Intercom — A/B Test Scan` |
+| Freemium / trial tracker | `{Company} — Freemium/Trial` | `Figma — Freemium/Trial` |
+| Negotiation intelligence | `{Company} — Negotiation Intel` | `Salesforce — Negotiation Intel` |
+| Category watchlist | `{Category} — Watchlist Setup` | `CRM — Watchlist Setup` |
+| Proactive monitoring | `{Company} — {Period} Alert` | `Clay — 2026W12 Alert` |
 
 ### Column values
 

@@ -126,4 +126,8 @@ skills/
       enrichment.md               # Supplementary research methods (Wayback, job postings, etc.)
       monday-logging.md           # monday.com board logging workflow
       visual-diff.md              # Visual before/after diff generation
+      hypothesis-engine.md        # Experiment hypothesis generation and backlog
+      proactive-monitoring.md     # Automated daily monitoring with severity-based alerts
+      severity-scoring.md         # 4-dimension competitive impact scoring framework
+      knowledge-base.md           # Persistent cross-session pricing knowledge base
 ```

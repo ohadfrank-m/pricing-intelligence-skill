@@ -221,6 +221,129 @@ If CDX returns 403: note it, skip this step entirely. Do not treat the 403 as a 
 
 ---
 
+## Step 7b: Multi-variant page rendering detection
+
+The standard `WebFetch` returns only one version of the pricing page. Real A/B tests serve different content to different visitors. This step attempts to catch the test in action by fetching the page multiple times with varied conditions and diffing the responses.
+
+### Method 1: Multiple fetches with cache-busting
+
+Fetch the pricing page 3 times in parallel with different query parameters to bypass any CDN caching:
+
+```
+WebFetch(url="https://{domain}/pricing?_v=1&t={timestamp_1}")
+WebFetch(url="https://{domain}/pricing?_v=2&t={timestamp_2}")
+WebFetch(url="https://{domain}/pricing?_v=3&t={timestamp_3}")
+```
+
+Use different timestamps (seconds apart) for each fetch. Compare the three responses for differences in:
+- Plan names or tier labels
+- Price values (monthly, annual)
+- CTA button text ("Start free trial" vs. "Get started" vs. "Try for free")
+- Feature list content or ordering
+- Hero plan badge ("Most popular", "Best value", "Recommended")
+- Annual/monthly toggle default state
+- Social proof elements (logo bar, customer count, testimonial)
+
+### Method 2: Browser MCP with cookie/state variation
+
+If Method 1 returns identical content (most server-side tests use cookies, not query params), use the browser MCP for deeper detection:
+
+```
+browser_navigate(url="https://{domain}/pricing")
+browser_snapshot()
+```
+
+Then clear cookies and navigate again:
+
+```
+browser_navigate(url="https://{domain}/pricing")
+browser_snapshot()
+```
+
+Compare the two snapshots. Client-side A/B tools (Optimizely, VWO) often assign variants via cookies — clearing cookies between visits may surface a different variant.
+
+### Diff analysis
+
+If any differences are found between fetches:
+
+```
+### Live A/B test detected — variant comparison
+
+| Element | Variant A | Variant B | Variant C |
+|---------|-----------|-----------|-----------|
+| {element} | {value} | {value} | {value} |
+| {element} | {value} | {value} | — |
+
+**Variants detected:** {count}
+**Test scope:** {Copy only / Pricing values / Plan structure / Full page redesign}
+**Confidence:** Confirmed — multiple page versions served to different requests
+```
+
+If all fetches return identical content: note "Multi-variant check: no content differences detected across {N} fetches. Either no active test, or test is segmented by geo/account/cookie that cannot be varied via fetch."
+
+---
+
+## Step 7c: Experiment hypothesis reverse-engineering
+
+When testing infrastructure is detected (Step 1) or a live A/B test is confirmed (Step 7b), systematically decode *what the competitor is testing* by combining tool metadata with pricing page teardown analysis.
+
+### Extract experiment metadata
+
+If experiment names or variant IDs are visible in the page source (common with Optimizely and VWO):
+
+**Optimizely:**
+```
+Look for: window.optimizely, optimizely.get('state'), experiment IDs in data-optly-* attributes
+Extract: experiment name, variant names, audience targeting rules
+```
+
+**VWO:**
+```
+Look for: window._vwo_exp, _vwo_exp_ids, VWO campaign data in page scripts
+Extract: campaign name, goal name (reveals what metric they're optimizing for)
+```
+
+**Statsig:**
+```
+Look for: statsig, experiment gate names in network requests or embedded config
+Extract: gate name (often descriptive, e.g., "pricing_page_v2", "annual_default_test")
+```
+
+**LaunchDarkly:**
+```
+Look for: ldclient, feature flag keys in page source or network requests
+Extract: flag key names (e.g., "show-enterprise-tier", "pricing-cta-variant")
+```
+
+### Map metadata to hypothesis
+
+Combine any visible experiment name/ID with the pricing page teardown dimensions from [pricing-page-teardown.md](pricing-page-teardown.md) to infer the test hypothesis:
+
+| Experiment signal | Likely hypothesis being tested |
+|-------------------|-------------------------------|
+| CTA text varies between fetches | Conversion rate optimization — testing which action language drives more signups |
+| Hero plan badge changes | Tier conversion — testing which plan to push buyers toward |
+| Price values differ | Price elasticity test — actively testing willingness to pay at different price points |
+| Annual/monthly default toggles | Revenue optimization — testing whether annual-default increases contract value |
+| Feature list reordered | Value perception — testing which features drive purchase decisions |
+| Plan count differs (e.g., 3 vs. 4 tiers) | Packaging test — testing whether a simpler or more granular tier structure converts better |
+| Free tier visible in one variant, hidden in another | Freemium test — testing whether hiding free tier increases paid conversion |
+| Enterprise "Contact Sales" vs. visible price | Sales motion test — testing self-serve enterprise vs. sales-led |
+
+### Output format for hypothesis
+
+```
+### Experiment hypothesis (reverse-engineered)
+
+**Experiment name:** {name if visible, or "Not visible"}
+**Likely hypothesis:** "{If they [change being tested], then [metric] will [direction] because [reasoning]}"
+**Test scope:** {element being varied}
+**What this tells us:** {1-2 sentences on what this reveals about their pricing strategy direction — e.g., "They're testing whether they can push more buyers to the Business tier, suggesting their current conversion is heavily weighted toward the lower tier."}
+**monday.com implication:** {1 sentence — does this test, if successful, create a competitive positioning issue for monday.com?}
+```
+
+---
+
 ## Step 8: Compare two page versions (if testing is confirmed)
 
 If the signal is Medium or above, offer to fetch an earlier version of the page from Wayback to show what already changed:
@@ -256,6 +379,90 @@ Follow [monday-logging.md](monday-logging.md):
 - Workflow: `ab-test-detection`
 
 Only log if signal level is Medium or above. Low/None signals don't need a monday entry.
+
+---
+
+## Step 10: Pricing page change velocity tracking
+
+After every scan (single company or watchlist sweep), persist the current state to the knowledge base to build a change-over-time record. This turns one-off detection into a longitudinal signal — you can see *how often* a competitor is iterating on their pricing page, which is itself a strategic signal.
+
+### Persist current scan
+
+After completing all detection steps, write the following to the knowledge base entry for this company (see [knowledge-base.md](knowledge-base.md)):
+
+```json
+{
+  "ab_test_status": {
+    "last_scanned": "ISO date",
+    "testing_tools_detected": ["Optimizely", "Statsig"],
+    "active_experiments": [
+      {
+        "detected_date": "ISO date",
+        "experiment_name": "pricing_cta_v3",
+        "scope": "CTA text",
+        "variants_detected": 2,
+        "hypothesis": "Testing whether 'Start free trial' vs 'Get started' affects signup rate",
+        "still_active": true
+      }
+    ],
+    "page_snapshots": [
+      {
+        "date": "ISO date",
+        "plan_count": 4,
+        "price_points": {"Individual": 0, "Basic": 12, "Standard": 17, "Pro": 28},
+        "cta_text": "Get started",
+        "hero_plan": "Standard",
+        "annual_default": true,
+        "hash": "{content_hash_of_key_pricing_elements}"
+      }
+    ]
+  }
+}
+```
+
+### Velocity analysis
+
+When the knowledge base already has prior scan data for this company, compute the velocity metrics:
+
+```
+### Pricing page change velocity — {Company}
+
+**Scans on record:** {count} over {time span}
+**Changes detected:** {count of snapshots where hash differs from previous}
+**Change frequency:** {changes per month}
+
+| Date | What changed | Experiment active? |
+|------|-------------|-------------------|
+| {date} | {specific change} | {Yes — experiment name / No} |
+| {date} | {specific change} | {Yes / No} |
+
+**Velocity classification:**
+```
+
+| Frequency | Classification | Signal |
+|-----------|---------------|--------|
+| 0 changes in 3+ months | **Static** | Not iterating on pricing — either confident or neglecting it |
+| 1 change per quarter | **Normal** | Standard iteration cadence |
+| 2+ changes per quarter | **Active** | Actively optimizing pricing — treat as high-priority competitor |
+| 4+ changes per quarter | **Rapid** | Aggressive pricing experimentation — likely has dedicated pricing/growth team |
+
+**monday.com implication:** Companies classified as "Active" or "Rapid" should be scanned more frequently and flagged for the proactive monitoring workflow.
+
+### Cross-company velocity comparison
+
+If the knowledge base has velocity data for 3+ companies, include a comparative view:
+
+```
+### Competitive pricing iteration velocity
+
+| Company | Scans | Changes | Frequency | Classification |
+|---------|-------|---------|-----------|---------------|
+| {Company A} | {n} | {n} | {n/mo} | Rapid |
+| {Company B} | {n} | {n} | {n/mo} | Normal |
+| {Company C} | {n} | {n} | {n/mo} | Static |
+
+**Pattern:** {1 sentence — e.g., "Direct competitors are iterating 2-3x faster than adjacent players, suggesting the competitive pricing space is actively contested."}
+```
 
 ---
 

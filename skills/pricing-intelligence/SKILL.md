@@ -78,15 +78,16 @@ All tools are free unless marked with credit cost.
 |------|------|---------|
 | `get_status()` | Free | Check account and connection status |
 | `search_companies(query)` | Free | Find companies by name or keyword |
-| `search_companies_advanced(filters)` | Free | Attribute-based discovery |
+| `search_companies_advanced(q, has_freemium, price_min, ...)` | Free | Attribute-based discovery (supports q, has_freemium, has_license, has_usage, has_credit, price_min, price_max, plan_name, category_id, employees, and more) |
 | `get_company_details(slug)` | Free | Full pricing breakdown for a company |
 | `get_company_history(slug, discovery_only=true)` | Free | Preview available pricing history periods |
 | `get_company_history(slug)` | **1 credit/diff** | Full pricing change history |
+| `browse_diffs(period_type)` | Free | Discover available diff periods and stats (omit period_type for global stats) |
 | `get_diff_highlight(slug, period, query)` | **1 credit** | Visual before/after screenshot of a price change |
 | `add_to_watchlist(slugs=[...])` | Free | Add companies to monitoring watchlist |
 | `get_watchlist()` | Free | List all companies currently on the watchlist |
 | `get_pricing_news()` | Free | Recent pricing changes across all tracked companies |
-| `fetch_diffs(scope, period, period_type)` | **2 credits** | Detailed change data for watchlist or global scope |
+| `fetch_diffs(scope, period, period_type)` | **1 credit** (company) / **2 credits** (global) | Detailed change data for a company or global scope |
 | `search_pricing_knowledge(query)` | Free | Pricing strategy frameworks and best practices |
 | `add_page(url)` | Free | Submit a company's pricing page for tracking |
 | `upload_report(filename, file_path)` + curl | Free | Generate and upload shareable HTML landscape report |

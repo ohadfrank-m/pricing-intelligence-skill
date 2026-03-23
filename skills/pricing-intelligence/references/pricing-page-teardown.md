@@ -213,10 +213,11 @@ Rate based on: decoy presence, behavioral tactics used, CTA optimization, featur
 After the live teardown, check one historical snapshot to surface what changed:
 
 ```
-WebFetch(url="https://web.archive.org/cdx/search/cdx?url={domain}/pricing&output=json&limit=5&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:6")
+WebFetch(url="https://archive.org/wayback/available?url={domain}/pricing")
+WebFetch(url="https://archive.org/wayback/available?url={domain}/pricing&timestamp={12_months_ago_YYYYMMDD}")
 ```
 
-Fetch the earliest available snapshot and note any structural differences vs. today. A company that added "Most Popular" badges, switched to annual-default, or restructured their CTA copy since their early days has an active, iterating pricing team.
+Use the Availability API (not CDX — it's blocked for most large SaaS sites). Fetch snapshots from the returned timestamps and note any structural differences vs. today. A company that added "Most Popular" badges, switched to annual-default, or restructured their CTA copy since their early days has an active, iterating pricing team.
 
 ---
 

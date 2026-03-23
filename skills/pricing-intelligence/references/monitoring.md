@@ -70,19 +70,23 @@ No changes detected for: {Company C}, {Company D}
 
 ### Detailed change data — weekly or monthly
 
-**Warn the user before calling:** this costs 2 credits.
+**Warn the user before calling:** this costs 1 credit per company (company scope) or 2 credits (global scope).
+
+For watchlist companies, call `fetch_diffs` once per company using `scope="company"` — run all calls in parallel:
 
 ```
-fetch_diffs(scope="watchlist", period="latest", period_type="weeks")
+fetch_diffs(scope="company", slug="{slug_1}", period="latest", period_type="weeks")
+fetch_diffs(scope="company", slug="{slug_2}", period="latest", period_type="weeks")
+# ... one call per watchlist company with changes
 ```
 
 Or for a specific period:
 
 ```
-fetch_diffs(scope="watchlist", period="{YYYY-MM}", period_type="months")
+fetch_diffs(scope="company", slug="{slug}", period="{YYYY-MM}", period_type="months")
 ```
 
-Or for global market changes (not just watchlist):
+Or for global market changes (not just watchlist) — costs 2 credits:
 
 ```
 fetch_diffs(scope="global", period="latest", period_type="weeks")

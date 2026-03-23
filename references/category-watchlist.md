@@ -15,7 +15,8 @@ Track an entire competitive category as a bundle — add all relevant companies 
 Run both in parallel:
 
 ```
-search_companies_advanced(filters={"category": "{category name}"})
+search_companies(query="{category name}")
+search_companies_advanced(q="{category name}")
 WebSearch(query='"{category}" SaaS tools list competitors 2026 site:g2.com OR site:capterra.com OR site:getapp.com')
 ```
 

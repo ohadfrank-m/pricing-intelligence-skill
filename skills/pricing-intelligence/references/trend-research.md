@@ -83,10 +83,12 @@ Run these in parallel with Step 4 to add depth. See [enrichment.md](enrichment.m
 For the 3–5 most relevant companies in the landscape, pull Wayback Machine snapshots to see how their pricing page has evolved over the past 12–24 months:
 
 ```
-WebFetch(url="https://web.archive.org/cdx/search/cdx?url={domain}/pricing&output=json&limit=10&fl=timestamp,statuscode&filter=statuscode:200&collapse=timestamp:6")
+WebFetch(url="https://archive.org/wayback/available?url={domain}/pricing")
+WebFetch(url="https://archive.org/wayback/available?url={domain}/pricing&timestamp={12_months_ago_YYYYMMDD}")
+WebFetch(url="https://archive.org/wayback/available?url={domain}/pricing&timestamp={24_months_ago_YYYYMMDD}")
 ```
 
-Use the earliest and latest snapshots to characterize the trajectory (e.g., "moved from flat to per-seat", "added enterprise tier", "removed freemium").
+Use the Availability API (not CDX — it's blocked for most large SaaS sites). Fetch snapshots from the returned timestamps and compare them to characterize the trajectory (e.g., "moved from flat to per-seat", "added enterprise tier", "removed freemium").
 
 ### Job postings as leading indicator
 
