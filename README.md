@@ -67,9 +67,29 @@ The skill automatically logs all outputs to a "Pricing Intelligence" board on mo
 
 ## Installation
 
-### Claude Cowork
+### Claude Code
 
-Install directly as a plugin from the Cowork plugin browser, or clone the repo and install manually — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
+Clone the repo into your project or home directory:
+
+```bash
+git clone https://github.com/ohadfrank-m/pricing-intelligence-skill
+```
+
+Then register the skill using `--add-dir` so Claude Code discovers it automatically:
+
+```bash
+claude --add-dir /path/to/pricing-intelligence-skill
+```
+
+Claude Code picks up the skill from `.claude/skills/pricing-intelligence/SKILL.md` via the included symlink. You can also copy or symlink the `skills/pricing-intelligence/` directory into your own project's `.claude/skills/` if you prefer project-level installation:
+
+```bash
+# From your project root:
+mkdir -p .claude/skills
+ln -s /path/to/pricing-intelligence-skill/skills/pricing-intelligence .claude/skills/pricing-intelligence
+```
+
+The skill auto-triggers when you ask pricing questions, or invoke it directly with `/pricing-intelligence`.
 
 ### Cursor
 
@@ -79,7 +99,11 @@ git clone https://github.com/ohadfrank-m/pricing-intelligence-skill
 
 Then in Cursor, go to **Settings → Features → Agent Skills → Add path** and point to the `skills/pricing-intelligence/` subdirectory inside the cloned repo.
 
-### Claude Code / other AI environments
+### Claude Cowork
+
+Install directly as a plugin from the Cowork plugin browser, or clone the repo and install manually — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
+
+### Other AI environments
 
 Clone or download this repo. The skill entrypoint is `skills/pricing-intelligence/SKILL.md`. Follow your environment's instructions for registering a skill folder, pointing to `skills/pricing-intelligence/`.
 
@@ -103,6 +127,9 @@ Just talk to your AI assistant naturally. Example triggers:
 ## File structure
 
 ```
+.claude/
+  skills/
+    pricing-intelligence/         -> ../../skills/pricing-intelligence (symlink for Claude Code)
 .claude-plugin/
   plugin.json                     # Cowork plugin manifest
 .mcp.json                         # Bundled PricingSaaS MCP config (auto-loaded in Cowork)

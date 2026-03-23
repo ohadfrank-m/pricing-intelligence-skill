@@ -35,7 +35,19 @@ This skill requires the PricingSaaS MCP server (`https://mcp.pricingsaas.com`) t
 }
 ```
 
-**Claude / other environments:** Follow your environment's MCP configuration instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
+**Claude Code:** Run `claude mcp add pricingsaas -- npx -y mcp-remote https://mcp.pricingsaas.com`, or add to `~/.claude.json` / project `.mcp.json`:
+```json
+{
+  "mcpServers": {
+    "pricingsaas": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.pricingsaas.com"]
+    }
+  }
+}
+```
+
+**Other environments:** Follow your environment's MCP configuration instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
 
 **API key:** If the connection fails, the server may require an API key. Get one at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token in the Authorization header.
 
