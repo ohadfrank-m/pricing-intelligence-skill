@@ -151,6 +151,77 @@ Once you have the current structure and any detected changes, classify the strat
 
 ---
 
+## Step 5b: Free-to-paid conversion timeline and competitive benchmarking
+
+Track how each company's free/trial structure has evolved over time and benchmark against competitors. This surfaces the trajectory — is the industry moving toward more restrictive free tiers, shorter trials, or more generous freemium?
+
+### Timeline construction
+
+Using data from the knowledge base and PricingSaaS history, build a chronological view of all free/trial changes for this company:
+
+```
+Read(path="Claude-Workspace/pricing-intelligence/knowledge-base.json")
+```
+
+Look up the company's `pricing_history_summary` and `ab_test_status` entries. Combine with PricingSaaS history (Step 2) to build the timeline.
+
+```
+### Free/trial evolution timeline — {Company}
+
+| Date | Change | Before | After | Impact direction |
+|------|--------|--------|-------|-----------------|
+| {date} | {change type} | {previous state} | {new state} | {↑ more generous / ↓ more restrictive / → neutral} |
+| {date} | {change type} | {previous} | {new} | {direction} |
+
+**Overall trajectory:** {More restrictive / More generous / Oscillating / Stable}
+**Trajectory signal:** {1 sentence interpretation — e.g., "Consistent tightening of free tier over 18 months signals transition from growth-mode to monetization-mode."}
+```
+
+### Cross-company benchmarking
+
+When the knowledge base contains free/trial data for 3+ companies in the same category, generate a competitive benchmark:
+
+```
+### Free/trial competitive benchmark — {Category}
+
+| Dimension | {Company A} | {Company B} | {Company C} | monday.com |
+|-----------|------------|------------|------------|------------|
+| Free tier exists | {Yes/No} | {Yes/No} | {Yes/No} | Yes |
+| Free tier seats/users | {limit} | {limit} | {limit} | {limit} |
+| Key free tier limits | {description} | {description} | {description} | {description} |
+| Trial length | {days} | {days} | {days} | {days} |
+| CC required | {Yes/No} | {Yes/No} | {Yes/No} | No |
+| Reverse trial | {Yes/No} | {Yes/No} | {Yes/No} | {Yes/No} |
+| Direction (last 12mo) | {more/less restrictive} | {direction} | {direction} | {direction} |
+
+**Category pattern:** {1-2 sentences — "The work management category is converging on 14-day trials with CC required. monday.com's 14-day no-CC trial is now in the minority, which could be a competitive advantage or a conversion rate drag."}
+
+**monday.com positioning:** {1-2 sentences — where monday.com sits vs. the benchmark, and whether the competitive landscape suggests any changes to monday.com's own free/trial structure.}
+```
+
+### Persist timeline data
+
+After generating the timeline and benchmark, update the knowledge base entry for this company with the latest free/trial snapshot:
+
+```json
+{
+  "freemium_trial": {
+    "last_checked": "ISO date",
+    "has_free_tier": true,
+    "free_tier_limits": {"seats": 2, "boards": 3},
+    "trial_length_days": 14,
+    "cc_required": false,
+    "reverse_trial": false,
+    "trajectory": "more_restrictive",
+    "timeline_entries": [
+      {"date": "ISO date", "change": "description", "direction": "restrictive"}
+    ]
+  }
+}
+```
+
+---
+
 ## Step 6: Pattern detection across multiple companies
 
 When called for a category or watchlist sweep, run `get_company_details` for all companies in parallel and build a comparison table:
