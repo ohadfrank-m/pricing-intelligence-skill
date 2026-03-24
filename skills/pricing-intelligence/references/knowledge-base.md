@@ -184,7 +184,6 @@ Write(path="Claude-Workspace/pricing-intelligence/knowledge-base.json", contents
 | trend-research | `current_pricing` and `category` for all discovered companies |
 | battlecard-generator | `monday_implications` (updated competitive framing) |
 | sentiment-research | `sentiment_snapshot` |
-| ab-test-detection | `ab_test_status` |
 | freemium-trial-tracker | `current_pricing.free_tier`, `current_pricing.trial` |
 | pricing-page-teardown | `strategic_notes` (GTM motion, sophistication assessment) |
 | negotiation-intelligence | append negotiation data to `strategic_notes` |
@@ -392,11 +391,3 @@ After receiving the data, store:
 ```
 
 Refresh when the user says "update monday.com pricing" or when it's older than 90 days.
-
-### Slack configuration
-
-Stored in `config.slack`. Set up on first alert delivery — see [proactive-monitoring.md](proactive-monitoring.md) for the full setup flow.
-
-### Experiment defaults
-
-Stored in `config.experiment_defaults`. Set up on first experiment generation — see [hypothesis-engine.md](hypothesis-engine.md).

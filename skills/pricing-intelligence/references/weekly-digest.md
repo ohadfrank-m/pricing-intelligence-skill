@@ -33,24 +33,6 @@ WebSearch(query='{watchlist company 1} OR {watchlist company 2} OR {watchlist co
 WebSearch(query='SaaS pricing "announced" OR "launching" OR "effective" {current month} {year}')
 ```
 
-**Required: A/B test detection for all watchlist companies.** This is free — no credits required. Run Steps 1 and 2 of [ab-test-detection.md](ab-test-detection.md) in parallel for every watchlist company. Do not skip this step regardless of credit balance.
-
-```
-# Fetch all pricing pages in parallel (reuse content if already fetched above):
-WebFetch(url="https://{company1-domain}/pricing")
-WebFetch(url="https://{company2-domain}/pricing")
-WebFetch(url="https://{company3-domain}/pricing")
-...
-
-# BuiltWith lookups in parallel:
-WebSearch(query='site:builtwith.com "{company1-domain}"')
-WebSearch(query='site:builtwith.com "{company2-domain}"')
-WebSearch(query='site:builtwith.com "{company3-domain}"')
-...
-```
-
-Scan each page for A/B testing tool signatures (Optimizely, Statsig, VWO, LaunchDarkly, etc.). Any company with a detected tool gets flagged as "testing infrastructure active" in the digest.
-
 ---
 
 ## Step 2b: Lightweight sentiment pass for top changes
@@ -101,12 +83,6 @@ For each change detected (from MCP + web signals), assign a category:
 | **AI pricing signal** | New AI-related monetization move | "Per-resolution pricing for AI agents" |
 | **Soft signal** | Hiring, changelog, community discussion | "Pricing Strategy Principal hire at Zendesk" |
 | **Testing signal** | A/B testing tool detected in page source or BuiltWith | "Figma: Statsig detected on pricing page — experiment infrastructure active" |
-
-### Severity scoring
-
-After classifying each change, run the severity scoring framework from [severity-scoring.md](severity-scoring.md) on every change categorized as Price move, Structure change, Add-on expansion, Packaging shift, or AI pricing signal. Skip scoring for Soft signal and Testing signal categories.
-
-Sort all changes by severity score (highest first). The "Must-know this week" section only includes P0 (score 10–12) and P1 (score 7–9) changes. P2 changes (score 4–6) appear in "Changes by company." P3 changes (score 0–3) move to "Also this week" or are omitted if the digest is already long.
 
 ### Knowledge base context
 

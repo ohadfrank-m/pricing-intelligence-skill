@@ -15,7 +15,6 @@ Works in **Cursor**, **Claude** (via Claude Code or Cowork), and any AI environm
 | Pricing page teardown | Psychology, structure, and conversion mechanics of a competitor's page |
 | Competitive battlecard | Objection handling, negotiation leverage, plan-by-plan comparison |
 | Weekly digest | What changed in pricing this week across your watchlist |
-| A/B test detection | Whether a competitor is actively testing their pricing page |
 | Freemium / trial tracker | Changes to free tiers, trial structures, and plan limits |
 | Negotiation intelligence | What buyers actually pay, typical discounts, how to negotiate |
 
@@ -101,7 +100,7 @@ Just talk to your AI assistant naturally. Example triggers:
 - `"Build a battlecard — us vs. Asana"`
 - `"What do people actually pay for Salesforce?"`
 - `"Has Figma changed their free tier recently?"`
-- `"Is Intercom A/B testing their pricing page?"`
+- `"Is Intercom testing new pricing?"`
 
 ## File structure
 
@@ -125,7 +124,6 @@ skills/
       monitoring.md               # Watchlist and pricing change tracking
       battlecard-generator.md     # Competitive battlecard generation
       weekly-digest.md            # Weekly pricing digest
-      ab-test-detection.md        # Pricing page A/B test detection
       freemium-trial-tracker.md   # Free tier and trial structure changes
       negotiation-intelligence.md # Real deal economics and negotiation leverage
       pricing-page-teardown.md    # Pricing page psychology and structure analysis
@@ -134,8 +132,5 @@ skills/
       enrichment.md               # Supplementary research methods (Wayback, job postings, etc.)
       monday-logging.md           # monday.com board logging workflow
       visual-diff.md              # Visual before/after diff generation
-      hypothesis-engine.md        # Experiment hypothesis generation and backlog
-      proactive-monitoring.md     # Automated daily monitoring with severity-based alerts
-      severity-scoring.md         # 4-dimension competitive impact scoring framework
       knowledge-base.md           # Persistent cross-session pricing knowledge base
 ```

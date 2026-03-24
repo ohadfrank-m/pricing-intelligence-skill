@@ -235,14 +235,6 @@ Generated: {date} | Source: PricingSaaS + live page data
 
 ---
 
-## Step 4b: Generate experiment hypotheses
-
-After building the battlecard, scan the "Where they win" section for findings that could be addressed by a pricing or packaging experiment on monday.com's side. For each such finding, run [hypothesis-engine.md](hypothesis-engine.md) to generate a structured experiment hypothesis.
-
-The hypothesis engine deduplicates against the existing backlog — if a similar experiment was already generated from a prior company-research session, it reinforces the existing hypothesis rather than creating a duplicate.
-
----
-
 ## Step 5: Offer follow-ups
 
 After delivering the battlecard, offer:

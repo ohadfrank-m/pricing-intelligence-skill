@@ -51,23 +51,6 @@ Extract and structure:
 - Employee count (company size proxy)
 - logo_url (for any report header)
 
-## Step 2b: A/B test detection (automatic — always run)
-
-Reuse the pricing page fetch from Step 2. Run Steps 1 and 2 of [ab-test-detection.md](ab-test-detection.md) in parallel — zero credit cost:
-
-```
-WebFetch(url="https://{domain}/pricing")   # reuse if already fetched above
-WebSearch(query='site:builtwith.com "{domain}"')
-```
-
-Scan the page source for testing tool signatures: Optimizely, Statsig, VWO, LaunchDarkly, AB Tasty, GrowthBook, PostHog, Split.io, Unleash, ConfigCat, Kameleoon. Record:
-- Tools found (or "None detected")
-- Whether experiment names or variant IDs are visible in page source (e.g., `window.optimizely`, `window._vwo_exp`)
-
-This feeds directly into the **A/B testing status** section of the output format. If `WebFetch` fails, note "page unreachable" and continue — do not block the workflow.
-
----
-
 ## Step 3: Check pricing history (free preview)
 
 ```
@@ -333,14 +316,6 @@ After delivering the main output, ask once:
 > "Want me to generate a pricing battlecard — monday.com vs. {Company} — with plan comparison, objection handling, and negotiation intelligence? It goes directly to sales or product."
 
 If yes, run [battlecard-generator.md](battlecard-generator.md). Pre-populate Steps 2 and 2b with the data already gathered in this research session — do not re-fetch what you already have.
-
----
-
-## Post-research: generate experiment hypothesis
-
-After delivering the main output, run [hypothesis-engine.md](hypothesis-engine.md) to extract a testable experiment from the "So what for monday.com" section. This runs silently — the engine appends one line to the output confirming the experiment was logged.
-
-If the "So what" section contains no actionable experiment signal (observational notes only), skip this step.
 
 ---
 

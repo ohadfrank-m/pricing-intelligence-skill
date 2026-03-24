@@ -198,8 +198,6 @@ Diff the two versions to surface price point wording, plan name changes, and cop
 
 **Note:** The Wayback CDX bulk API (used for frequency analysis) is blocked for most large SaaS companies. Do not use it here — use the lightweight availability API or direct snapshot fetch instead.
 
-While you have the live pricing page fetched, also scan it for A/B testing tool signatures (see [ab-test-detection.md](ab-test-detection.md) Step 1). If a testing tool is detected, add it to the output as a forward-looking signal: "Testing infrastructure active — a presentation change may follow this pricing move."
-
 ### Product changelog — was it announced?
 
 ```
@@ -229,26 +227,6 @@ After analyzing changes across multiple companies in a session:
 While processing each diff period, check whether any change types match the freemium/trial pattern: `Capacity Decreased`, `Capacity Increased`, `Feature Removed`, `Feature Added`, `Plan Removed`, `Plan Added`, `Pricing Metric Changed`. If detected on a plan that appears to be a free, trial, or starter tier, automatically run [freemium-trial-tracker.md](freemium-trial-tracker.md) Step 4 (classification) and include the result in the output.
 
 This requires no extra tool calls if you already have the diff data — just classify the change type against the freemium pattern table.
-
-### Severity scoring
-
-After collecting all changes and enrichment data, score every detected change using the severity scoring framework from [severity-scoring.md](severity-scoring.md). This requires the monday.com pricing reference from the knowledge base (`config.monday_pricing`).
-
-For each change, append the severity assessment to the output:
-
-```
-**Severity: P{tier} ({score}/12)**
-- Price proximity: {score}/3 — {rationale}
-- Segment overlap: {score}/3 — {rationale}
-- Change magnitude: {score}/3 — {rationale}
-- Strategic signal: {score}/3 — {rationale}
-```
-
-Sort all changes in the output by severity score (highest first). P0/P1 changes appear under "Critical changes", P2 under "Notable changes", P3 under "Logged" (or omit from the output entirely if the user prefers concise reports).
-
-### Hypothesis engine
-
-After scoring, run [hypothesis-engine.md](hypothesis-engine.md) for any change with a severity score of P0 or P1 that has a clear monday.com implication. The engine generates a structured experiment hypothesis and appends it to the experiment backlog in the knowledge base. One line is added to the output confirming the experiment was logged.
 
 ### Sentiment (offer after delivering changes)
 
