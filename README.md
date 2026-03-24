@@ -1,26 +1,23 @@
-# Pricing intelligence — AI Agent Skill
+# Pricing Intelligence
 
-An agent skill for researching and monitoring SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, websearch, and additional intelligence sources.
+An AI agent skill that researches and monitors SaaS pricing strategies using live [PricingSaaS](https://pricingsaas.com) data, public sentiment, and web intelligence. Works in Cursor and Claude Code.
 
-Works in **Cursor**, **Claude** (via Claude Code or Cowork), and any AI environment that supports MCP and markdown-based skills.
+Ask things like `"How does Notion price?"`, `"Build a battlecard — us vs. Asana"`, `"What changed in pricing this week?"`, or `"Tear down HubSpot's pricing page"` — the skill handles the rest.
 
-## What it does
-
-| Intent | What you get |
-|--------|-------------|
-| Single company deep-dive | Full pricing breakdown, tier structure, recent changes, and competitive implications |
-| Category / industry landscape | Pricing map across all major players in a space |
-| Track pricing changes | Watchlist monitoring with visual before/after diffs |
-| Sentiment analysis | How the market and customers are reacting to a company's pricing |
+| Capability | What you get |
+|------------|-------------|
+| Company deep-dive | Full pricing breakdown, tier structure, recent changes, competitive implications |
+| Industry landscape | Pricing map across all major players in a category |
+| Change monitoring | Watchlist with visual before/after diffs and weekly digests |
+| Competitive battlecard | Plan-by-plan comparison, objection handling, negotiation leverage |
 | Pricing page teardown | Psychology, structure, and conversion mechanics of a competitor's page |
-| Competitive battlecard | Objection handling, negotiation leverage, plan-by-plan comparison |
-| Weekly digest | What changed in pricing this week across your watchlist |
+| Sentiment analysis | How customers and the market are reacting to pricing changes |
 | Freemium / trial tracker | Changes to free tiers, trial structures, and plan limits |
 | Negotiation intelligence | What buyers actually pay, typical discounts, how to negotiate |
 
-Every company research output includes a "So what" section covering pricing headroom, positioning implications, experiment opportunities, and threat signals.
+Every output includes a **"So what for monday.com"** section with pricing headroom, positioning implications, and experiment opportunities.
 
-## Installation
+## Install
 
 ### Cursor
 
@@ -28,31 +25,15 @@ Every company research output includes a "So what" section covering pricing head
 npx skills add ohadfrank-m/pricing-intelligence-skill
 ```
 
-This downloads the skill into your Cursor skills directory automatically — no repo cloning needed.
-
-**Alternative methods:**
-
-- **Settings UI:** Go to **Settings > Rules > Add Rule > Remote Rule (GitHub)** and paste `https://github.com/ohadfrank-m/pricing-intelligence-skill`
-- **Plugin install:** `git clone https://github.com/ohadfrank-m/pricing-intelligence-skill ~/.cursor/plugins/local/pricing-intelligence` then reload Cursor
-- **Team Marketplace** (Teams/Enterprise plans): admin imports the GitHub URL from **Dashboard > Settings > Plugins > Team Marketplaces > Import** — team members get one-click install
-
 ### Claude Code
 
 ```bash
 claude plugins add ohadfrank-m/pricing-intelligence-skill
 ```
 
-### Claude Cowork
+## Setup: connect PricingSaaS MCP
 
-Install from the Cowork plugin browser — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
-
-### Other AI environments
-
-Clone or download this repo. The skill entrypoint is `skills/pricing-intelligence/SKILL.md`. Point your environment's skill registration to `skills/pricing-intelligence/`.
-
-## Setup: PricingSaaS MCP
-
-After installing the plugin/skill, each user needs to connect the [PricingSaaS MCP](https://mcp.pricingsaas.com) — this is the data source that powers the skill.
+Each user needs to connect the [PricingSaaS MCP](https://mcp.pricingsaas.com) — the data source that powers the skill.
 
 **Cursor** — add to `~/.cursor/mcp.json`:
 
@@ -73,64 +54,8 @@ After installing the plugin/skill, each user needs to connect the [PricingSaaS M
 claude mcp add pricingsaas -- npx -y mcp-remote https://mcp.pricingsaas.com
 ```
 
-**Other environments** — follow your environment's MCP setup instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
+On first use, a browser window will open for authentication. Verify the connection by asking: `"check pricing intelligence status"`.
 
-On first use, the MCP server will open a browser window for OAuth authentication. If authentication fails, get an API key at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token:
+## Optional: monday.com logging
 
-```json
-"headers": { "authorization": "Bearer YOUR_API_KEY" }
-```
-
-### monday.com MCP (optional)
-
-The skill automatically logs all outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection. If not connected, logging is skipped silently — all other functionality works without it.
-
-### Verify
-
-After setup, ask your AI assistant: `"check pricing intelligence status"` — the skill will call `get_status()` on the PricingSaaS MCP and confirm the connection.
-
-## Usage
-
-Just talk to your AI assistant naturally. Example triggers:
-
-- `"How does Notion price?"`
-- `"Map the project management pricing landscape"`
-- `"What changed in pricing this week?"`
-- `"Tear down HubSpot's pricing page"`
-- `"Build a battlecard — us vs. Asana"`
-- `"What do people actually pay for Salesforce?"`
-- `"Has Figma changed their free tier recently?"`
-- `"Is Intercom testing new pricing?"`
-
-## File structure
-
-```
-.cursor-plugin/
-  plugin.json                     # Cursor plugin manifest
-.claude-plugin/
-  plugin.json                     # Claude Cowork plugin manifest
-.claude/
-  skills/
-    pricing-intelligence/         -> ../../skills/pricing-intelligence (symlink for Claude Code)
-.mcp.json                         # PricingSaaS MCP config (auto-loaded by plugin systems)
-.gitignore
-README.md
-skills/
-  pricing-intelligence/
-    SKILL.md                      # Main entrypoint — routing logic and MCP tool reference
-    references/
-      company-research.md         # Single company deep-dive workflow
-      trend-research.md           # Category / industry landscape workflow
-      monitoring.md               # Watchlist and pricing change tracking
-      battlecard-generator.md     # Competitive battlecard generation
-      weekly-digest.md            # Weekly pricing digest
-      freemium-trial-tracker.md   # Free tier and trial structure changes
-      negotiation-intelligence.md # Real deal economics and negotiation leverage
-      pricing-page-teardown.md    # Pricing page psychology and structure analysis
-      sentiment-research.md       # Customer and market sentiment analysis
-      category-watchlist.md       # Category-level watchlist setup
-      enrichment.md               # Supplementary research methods (Wayback, job postings, etc.)
-      monday-logging.md           # monday.com board logging workflow
-      visual-diff.md              # Visual before/after diff generation
-      knowledge-base.md           # Persistent cross-session pricing knowledge base
-```
+The skill can log all research outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection. If not connected, logging is skipped silently.
