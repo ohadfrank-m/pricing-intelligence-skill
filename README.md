@@ -56,6 +56,6 @@ claude mcp add pricingsaas -- npx -y mcp-remote https://mcp.pricingsaas.com
 
 On first use, a browser window will open for authentication. Verify the connection by asking: `"check pricing intelligence status"`.
 
-## Optional: monday.com logging
+## Optional: monday.com integration
 
-The skill can log all research outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection. If not connected, logging is skipped silently.
+If a monday.com MCP is connected, the skill can log research outputs to a board of your choice or create a monday doc with the results. If not connected, everything still works — you just won't get the monday.com output.
