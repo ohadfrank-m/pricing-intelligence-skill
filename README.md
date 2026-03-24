@@ -21,11 +21,39 @@ Works in **Cursor**, **Claude** (via Claude Code or Cowork), and any AI environm
 
 Every company research output includes a "So what" section covering pricing headroom, positioning implications, experiment opportunities, and threat signals.
 
-## Prerequisites
+## Installation
 
-### 1. PricingSaaS MCP
+### Cursor
 
-This skill is powered by the [PricingSaaS MCP](https://mcp.pricingsaas.com).
+```bash
+npx skills add ohadfrank-m/pricing-intelligence-skill
+```
+
+This downloads the skill into your Cursor skills directory automatically — no repo cloning needed.
+
+**Alternative methods:**
+
+- **Settings UI:** Go to **Settings > Rules > Add Rule > Remote Rule (GitHub)** and paste `https://github.com/ohadfrank-m/pricing-intelligence-skill`
+- **Plugin install:** `git clone https://github.com/ohadfrank-m/pricing-intelligence-skill ~/.cursor/plugins/local/pricing-intelligence` then reload Cursor
+- **Team Marketplace** (Teams/Enterprise plans): admin imports the GitHub URL from **Dashboard > Settings > Plugins > Team Marketplaces > Import** — team members get one-click install
+
+### Claude Code
+
+```bash
+claude plugins add ohadfrank-m/pricing-intelligence-skill
+```
+
+### Claude Cowork
+
+Install from the Cowork plugin browser — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
+
+### Other AI environments
+
+Clone or download this repo. The skill entrypoint is `skills/pricing-intelligence/SKILL.md`. Point your environment's skill registration to `skills/pricing-intelligence/`.
+
+## Setup: PricingSaaS MCP
+
+After installing the plugin/skill, each user needs to connect the [PricingSaaS MCP](https://mcp.pricingsaas.com) — this is the data source that powers the skill.
 
 **Cursor** — add to `~/.cursor/mcp.json`:
 
@@ -40,76 +68,27 @@ This skill is powered by the [PricingSaaS MCP](https://mcp.pricingsaas.com).
 }
 ```
 
-**Claude Code** — add to your MCP config (typically `~/.claude/mcp.json` or via `claude mcp add`):
+**Claude Code:**
 
-```json
-{
-  "mcpServers": {
-    "pricingsaas": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "https://mcp.pricingsaas.com"]
-    }
-  }
-}
+```bash
+claude mcp add pricingsaas -- npx -y mcp-remote https://mcp.pricingsaas.com
 ```
 
-**Claude Cowork / other environments** — follow your environment's MCP setup instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
+**Other environments** — follow your environment's MCP setup instructions to add `https://mcp.pricingsaas.com` as a remote MCP server.
 
-If the server requires an API key, get one at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token in the Authorization header:
+On first use, the MCP server will open a browser window for OAuth authentication. If authentication fails, get an API key at [pricingsaas.com](https://pricingsaas.com) and pass it as a Bearer token:
 
 ```json
 "headers": { "authorization": "Bearer YOUR_API_KEY" }
 ```
 
-### 2. monday.com MCP (optional)
+### monday.com MCP (optional)
 
-The skill automatically logs all outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection with access to: `search`, `create_board`, `create_column`, `get_board_info`, `create_item`, `create_doc`, `create_update`. If not connected, logging is skipped silently — all other functionality works without it.
-
-## Installation
-
-### Claude Code
-
-Clone the repo into your project or home directory:
-
-```bash
-git clone https://github.com/ohadfrank-m/pricing-intelligence-skill
-```
-
-Then register the skill using `--add-dir` so Claude Code discovers it automatically:
-
-```bash
-claude --add-dir /path/to/pricing-intelligence-skill
-```
-
-Claude Code picks up the skill from `.claude/skills/pricing-intelligence/SKILL.md` via the included symlink. You can also copy or symlink the `skills/pricing-intelligence/` directory into your own project's `.claude/skills/` if you prefer project-level installation:
-
-```bash
-# From your project root:
-mkdir -p .claude/skills
-ln -s /path/to/pricing-intelligence-skill/skills/pricing-intelligence .claude/skills/pricing-intelligence
-```
-
-The skill auto-triggers when you ask pricing questions, or invoke it directly with `/pricing-intelligence`.
-
-### Cursor
-
-```bash
-git clone https://github.com/ohadfrank-m/pricing-intelligence-skill
-```
-
-Then in Cursor, go to **Settings → Features → Agent Skills → Add path** and point to the `skills/pricing-intelligence/` subdirectory inside the cloned repo.
-
-### Claude Cowork
-
-Install directly as a plugin from the Cowork plugin browser, or clone the repo and install manually — the `.claude-plugin/plugin.json` and `.mcp.json` at the root are picked up automatically.
-
-### Other AI environments
-
-Clone or download this repo. The skill entrypoint is `skills/pricing-intelligence/SKILL.md`. Follow your environment's instructions for registering a skill folder, pointing to `skills/pricing-intelligence/`.
+The skill automatically logs all outputs to a "Pricing Intelligence" board on monday.com. Requires a monday.com MCP connection. If not connected, logging is skipped silently — all other functionality works without it.
 
 ### Verify
 
-After installing, ask your AI assistant: `"check pricing intelligence status"` — the skill will call `get_status()` on the PricingSaaS MCP and confirm the connection.
+After setup, ask your AI assistant: `"check pricing intelligence status"` — the skill will call `get_status()` on the PricingSaaS MCP and confirm the connection.
 
 ## Usage
 
@@ -127,12 +106,14 @@ Just talk to your AI assistant naturally. Example triggers:
 ## File structure
 
 ```
+.cursor-plugin/
+  plugin.json                     # Cursor plugin manifest
+.claude-plugin/
+  plugin.json                     # Claude Cowork plugin manifest
 .claude/
   skills/
     pricing-intelligence/         -> ../../skills/pricing-intelligence (symlink for Claude Code)
-.claude-plugin/
-  plugin.json                     # Cowork plugin manifest
-.mcp.json                         # Bundled PricingSaaS MCP config (auto-loaded in Cowork)
+.mcp.json                         # PricingSaaS MCP config (auto-loaded by plugin systems)
 .gitignore
 README.md
 skills/
