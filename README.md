@@ -22,13 +22,13 @@ Every output includes a **"So what for monday.com"** section with pricing headro
 ### Cursor
 
 ```bash
-npx skills add ohadfrank-m/pricing-intelligence-skill
+npx skills add ohadfrank-m/pricing-intelligence-skill --agent cursor -g -y
 ```
 
 ### Claude Code
 
 ```bash
-claude plugins add ohadfrank-m/pricing-intelligence-skill
+npx skills add ohadfrank-m/pricing-intelligence-skill --agent claude-code -g -y
 ```
 
 ## Setup: connect PricingSaaS MCP
